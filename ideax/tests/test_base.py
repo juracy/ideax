@@ -7,4 +7,4 @@ class TestBase(object):
         pass
 
     def test_add(self, ideax):
-        assert 2 == 2
+        assert 2 == ideax
