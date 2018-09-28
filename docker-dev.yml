@@ -14,9 +14,10 @@ services:
 
   ideax:
     build:
-      context: dev
+      context: .
+      dockerfile: dev/Dockerfile
     env_file: .env
-    command: bash /app/docker-entrypoint.sh
+    command: sh /app/docker-entrypoint.sh
     volumes:
       - .:/app:rw
       - ideax_media:/var/www/ideax/media

@@ -17,13 +17,20 @@ python manage.py compilemessages
 
 if [ ! -f /provisioned ]; then
   echo "First time setup"
-  python manage.py loaddata initialdata.json
+  python manage.py loaddata docker/initialdata.json
   touch /provisioned
 fi
 
-exec gunicorn ideax.wsgi:application \
-    --name ideax_django \
-    --bind 0.0.0.0:8000 \
-    --workers 5 \
-    --log-level=${LOG_LEVEL} \
-"$@"
+while true; do
+    ./manage.py runserver 0.0.0.0:8000
+    # ./manage.py runserver_plus 0.0.0.0:8000
+    echo "Re-starting Django runserver in 5 seconds..."
+    sleep 5
+done
+
+# exec gunicorn ideax.wsgi:application \
+#     --name ideax_django \
+#     --bind 0.0.0.0:8000 \
+#     --workers 5 \
+#     --log-level=${LOG_LEVEL} \
+# "$@"
