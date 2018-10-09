@@ -14,6 +14,6 @@ def django_db_setup(django_db_setup, django_db_blocker):
         call_command('loaddata', 'docker/initialdata.json')
 
 
-@fixture(scope='session', autouse=True)
-def language():
+@fixture(autouse=True)
+def set_default_language():
     translation.activate('pt-br')
