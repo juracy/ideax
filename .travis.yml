@@ -17,4 +17,5 @@ env:
     - DATABASE_URL=mysql://travis@localhost/test
 script:
   - flake8 ideax
+  - ./manage.py compilemessages
   - py.test
