@@ -4,6 +4,13 @@ python:
 # command to install dependencies
 install:
   - pip install -r requirements/dev.txt
+env:
+  - DEBUG=True
+  - DJANGO_SETTINGS_MODULE=ideax.settings.test
+  - SECRET_KEY=12345678901234567890123456789012345678901234567890
+  - DATABASE_URL=sqlite://:memory
+  - GENERAL_USER_GROUP=General
 # command to run tests
 script:
+  - flake8 ideax
   - py.test
