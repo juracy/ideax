@@ -66,6 +66,33 @@
     "final_date": null
   }
 }, {
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$100000$Dgqiqe7IBSEY$XoIHZCItnacYFRVNdDZTCLshXXFPi2cZW6PKdgkzBd0=",
+    "last_login": "2018-05-17T18:15:01.135Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@localhost",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2018-05-14T15:47:23Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}, {
+  "model": "users.userprofile",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "use_term_accept": true,
+    "acceptance_date": "2018-05-14T15:48:23Z",
+    "ip": "127.0.0.1",
+    "manager": true
+  }
+}, {
   "model": "auth.permission",
   "pk": 88,
   "fields": {
