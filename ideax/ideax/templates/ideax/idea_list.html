@@ -140,16 +140,17 @@
             {% for idea in ideas %}
               {% include 'ideax/includes/idea_detail.html' %}
             {% endfor %}
+
+            {% if ideas.has_next %}
+                <a class="infinite-more-link" href="?page={{ ideas.next_page_number }}"></a>
+            {% endif %}
+
+            <div class="loading" style="display: none; text-align: center">
+                <img src="{% static 'images/loading.gif' %}" alt=""> Loading...
+                <!--animation icon 'eclipse' is provided by loading.io-->
+            </div>
           </div>
 
-          {% if ideas.has_next %}
-            <a class="infinite-more-link" href="?page={{ ideas.next_page_number }}"></a>
-          {% endif %}
-
-          <div class="loading" style="display: none; text-align: center">
-            <img src="{% static 'images/loading.gif' %}" alt=""> Loading...
-            <!--animation icon 'eclipse' is provided by loading.io-->
-          </div>
 
 
           {%endif%}

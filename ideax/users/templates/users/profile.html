@@ -2,6 +2,57 @@
 {% load i18n staticfiles %}
 {% load gravatar %}
 
+{% block top %}
+<nav class="navbar navbar-expand fixed-top navbar-dark shadow-sm nav-bg">
+        <a class="navbar-brand" href="/">
+          <img src="{% static 'images/logo_horizontal.png' %}" height="30" class="d-inline-block align-top" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="true" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+          {% if username.is_authenticated %}
+          <ul class="navbar-nav mx-auto"></ul>
+          <ul class="navbar-nav">
+            <span class="navbar-text avatar">
+                {% gravatar username.email 20 %}
+            </span>
+            <span class="navbar-text">
+              {% blocktrans with name=username.username %}Hi, {{name}}!{% endblocktrans %}
+            </span>
+            {% block nav %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-bars fa-lg"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item"  href="{% url 'users:profile' pk=0 %}">{% trans 'Profile' %}</a>
+                <a class="dropdown-item"  href="{% url 'users:whoinnovates' %}">{% trans 'Who Innovates' %}</a>
+                <hr>
+                <a class="dropdown-item"  href="/">{% trans 'Explore Ideas' %}</a>
+                <a class="dropdown-item" href="{% url 'challenge_list' %}">{% trans 'Challenges' %}</a>
+                <a class="dropdown-item" href="{% url 'use_term' %}">{% trans 'Active Terms of Use and Privacy' %}</a>
+                <a class="dropdown-item disabled" href="#">{% trans 'Users' %}</a>
+                {% if perms.ideax.manage_idea %}
+                  <a class="dropdown-item" href="{% url 'administration:index' %}">{% trans 'Administration' %}</a>
+                {% endif %}
+                <a class="dropdown-item" href="{% url 'users:logout' %}">{% trans 'Logout' %}</i></a>
+              </div>
+            </li>
+            {% endblock %}
+          </ul>
+
+          {% else %}
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item"><a class="nav-link" href="/help/"><i class="fas fa-question"></i> {% trans 'Help' %}</a></li>
+          </ul>
+          <span class="navbar-text">
+            <a href="{% url 'users:login' %}">{% trans 'Login' %}</i></a>
+          </span>
+          {% endif %}
+        </div>
+      </nav>
+{% endblock %}
 {% block content %}
 <div class="scrolltop">
     <a class="scroll icon" title="{% trans 'Back to top' %}" class="btn-floating grey"><i class="fas fa-chevron-up"></i></a>

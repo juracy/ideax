@@ -55,7 +55,6 @@ urlpatterns = [
     path('dimension/', views.dimension_list, name='dimension_list'),
     path('dimension/<int:pk>/edit/', views.dimension_edit, name='dimension_edit'),
     path('dimension/<int:pk>/remove/', views.dimension_remove, name='dimension_remove'),
-    path('dashboard/', views.dashboard, name='dashboard'),
     re_path('author/', views.user_profile_page, name='user_profile_page'),
 
     # TODO: Refactor it

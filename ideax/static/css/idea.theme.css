@@ -6,6 +6,118 @@ body {
   min-height: 100vh;
 }
 
+.staff-icon {
+    list-style: none;
+}
+
+.innovates div,h2,a,img,i,ul,li {
+    font-size: 100%;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+    border: 0;
+}
+
+.staff-item {
+    font-family: 'Lato', 'Roboto', sans-serif;
+    font-weight: 300;
+    display: block;
+    width: 100%;
+    max-width: 990px;
+    margin: 20px auto;
+    color: #111;
+    -ms-flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .staff-card section {
+    display: flex;
+    font-size: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .staff-item a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .staff-item {
+    width: 20%;
+    -webkit-transition: .4s;
+    -moz-transition: .4s;
+    -o-transition: .4s;
+    transition: .4s;
+    text-align: center;
+  }
+
+  .staff-item:hover {
+    display: inline-block;
+    -webkit-transform: scale(1.05);
+    -moz-transform: scale(1.05);
+    -ms-transform: scale(1.05);
+    -o-transform: scale(1.05);
+    transform: scale(1.05);
+    box-shadow: 0 3px 15px rgba(0, 0, 0, .2);
+  }
+
+  .staff-item img {
+    width: 128px;
+    margin-bottom: 16px;
+  }
+
+  .staff-item h2 {
+    font-size: 24px;
+  }
+
+  .staff-item .description {
+    margin-top: 24px;
+  }
+
+  .staff-item .description ul {
+    display: flex;
+    justify-content: center;
+    -ms-flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+  }
+
+  .staff-item .description li:first-child {
+    margin-right: 16px;
+  }
+
+  .staff-item .description li i {
+    font-size: 36px;
+    color: #666;
+  }
+
+  .staff-item .description li:first-child i {
+    color: #55acee;
+  }
+
+  @media screen and (max-width:640px) {
+    .staff-item {
+      width: auto;
+      flex-grow: 1;
+    }
+  }
+
+  @media screen and (max-width:510px) {
+    .staff-item:hover {
+      display: inline-block;
+      -webkit-transform: none;
+      -moz-transform: none;
+      -ms-transform: none;
+      -o-transform: none;
+      transform: none;
+      background: none;
+      box-shadow: none;
+    }
+  }
+
 .invite{
     background-image: url("../images/grey-logo.png");
     width: 730px;
@@ -1301,13 +1413,4 @@ nav .avatar img {
         white-space: nowrap;
         overflow: hidden;
     }
-}
-
-.innovator-info {
-    font-family: "Open Sans";
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 50%;
-    text-align: center;
 }

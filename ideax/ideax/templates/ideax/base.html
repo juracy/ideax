@@ -38,7 +38,7 @@
         <script type="text/javascript" src="{% static 'admin/js/SelectBox.js' %}"></script>
         <script type="text/javascript" src="{% static 'admin/js/SelectFilter2.js' %}"></script>
 
-
+        <script src='https://www.google.com/recaptcha/api.js'></script>
         {{ form.media }}
     </head>
     <body>
@@ -67,7 +67,8 @@
                 <i class="fas fa-bars fa-lg"></i>
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item"  href="{% url 'users:profile' %}">{% trans 'Profile' %}</a>
+                <a class="dropdown-item"  href="{% url 'users:profile' pk=0 %}">{% trans 'Profile' %}</a>
+                <a class="dropdown-item"  href="{% url 'users:whoinnovates' %}">{% trans 'Who Innovates' %}</a>
                 <hr>
                 <a class="dropdown-item"  href="/">{% trans 'Explore Ideas' %}</a>
                 <a class="dropdown-item" href="{% url 'challenge_list' %}">{% trans 'Challenges' %}</a>

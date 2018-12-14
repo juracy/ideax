@@ -4,6 +4,7 @@ import uuid
 import collections
 import mistune
 import csv
+import urllib
 
 
 from django.contrib.auth.decorators import login_required, permission_required
@@ -21,6 +22,7 @@ from django.db import connection
 from django.http import StreamingHttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files.base import ContentFile
+from ideax.settings.django._core import GOOGLE_RECAPTCHA_SECRET_KEY, GOOGLE_RECAPTCHA_URL
 from martor.utils import LazyEncoder
 
 from ...users.models import UserProfile
@@ -150,21 +152,35 @@ def save_idea(request, form, template_name, new=False):
         if form.is_valid():
             idea = form.save(commit=False)
 
+            if GOOGLE_RECAPTCHA_URL:
+                ''' Begin reCAPTCHA validation '''
+                recaptcha_response = request.POST.get('g-recaptcha-response')
+                url = GOOGLE_RECAPTCHA_URL
+                values = {
+                    'secret': GOOGLE_RECAPTCHA_SECRET_KEY,
+                    'response': recaptcha_response
+                }
+                data = urllib.parse.urlencode(values).encode()
+                req = urllib.request.Request(url, data=data)
+                response = urllib.request.urlopen(req)
+                result = json.loads(response.read().decode())
+                ''' End reCAPTCHA validation '''
+                if not result['success']:
+                    messages.error(request, _('Invalid reCAPTCHA. Please try again.'))
+                    return render(request, template_name, {'form': form})
+
             if new:
                 idea_autor = UserProfile.objects.get(user=request.user)
                 idea.author = idea_autor
                 idea.creation_date = timezone.now()
                 idea.phase = Phase.GROW.id
-
                 if(idea.challenge):
                     idea.category = idea.challenge.category
                     category_image = Category_Image.get_random_image(idea.challenge.category)
                 else:
                     category_image = Category_Image.get_random_image(idea.category)
-
                 if category_image:
                     idea.category_image = category_image.image.url
-
                 idea.save()
                 idea.authors.add(idea.author)
                 phase_history = Phase_History(current_phase=Phase.GROW.id,
@@ -176,16 +192,14 @@ def save_idea(request, form, template_name, new=False):
                 phase_history.save()
             else:
                 idea.save()
-
             idea.authors.clear()
             idea.authors.add(UserProfile.objects.get(user__email=request.user.email))
             if form.cleaned_data['authors']:
                 for author in form.cleaned_data['authors']:
                     idea.authors.add(author)
-
             messages.success(request, _('Idea saved successfully!'))
-
-            audit(request.user.username, get_client_ip(request), 'SAVE_IDEA_OPERATION', Idea.__name__, str(idea.id))
+            audit(request.user.username, get_client_ip(request), 'SAVE_IDEA_OPERATION',
+                  Idea.__name__, str(idea.id))
 
             return redirect('idea_list')
 
@@ -533,17 +547,6 @@ def idea_detail(request, pk):
         pass
 
     return render(request, 'ideax/idea_detail.html', data)
-
-
-@login_required
-def dashboard(request):
-    data = dict()
-    data['ideas'] = Idea.objects.values("author__user__username", "author__user__email").annotate(
-        qtd=Count('author_id')).annotate(
-        count_dislike=Count(Case(When(popular_vote__like=False, then=1)))).annotate(
-        count_like=Count(Case(When(popular_vote__like=True, then=1))))
-
-    return render(request, 'ideax/dashboard.html', data)
 
 
 @login_required
