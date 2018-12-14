@@ -1,13 +1,14 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import CreateView
 from django.db.models import Count, Case, When
-
+from django.db import connection
 from .forms import SignUpForm
+from .utils import set_connection
 from ..ideax.models import Popular_Vote, Comment
 
 
@@ -44,3 +45,11 @@ class SignUpView(CreateView):
         user = authenticate(username=username, password=raw_password)
         login(self.request, user)
         return response
+
+def login(request):
+    if request.method == "POST":
+        email = request.POST.get('username', '')
+        hostname = email.split('@')[1]
+        set_connection(request, hostname)
+        request.session['client'] = request.tenant.domain_url
+    return auth_views.login(request)

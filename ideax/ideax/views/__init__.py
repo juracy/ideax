@@ -72,7 +72,7 @@ def get_phases_count():
     cursor = connection.cursor()
     cursor.execute('''select current_phase as phase, count(*) as qtd
                       from ideax_phase_history ph inner join ideax_idea i on ph.idea_id = i.id
-                      where ph.current =1 and i.discarded = 0 group by current_phase order by phase''')
+                      where ph.current =True and i.discarded = False group by current_phase order by phase''')
     data = cursor.fetchall()
 
     phases = dict()
@@ -692,9 +692,9 @@ def challenge_list(request):
 
 def get_active_count():
     cursor = connection.cursor()
-    cursor.execute('''select count(*) as qtd from ideax_challenge where active = 1 and discarted = 0''')
+    cursor.execute('''select count(*) as qtd from ideax_challenge where active = True and discarted = False''')
     data_active = cursor.fetchall()
-    cursor.execute('''select count(*) as qtd from ideax_challenge where active = 0 and discarted = 0''')
+    cursor.execute('''select count(*) as qtd from ideax_challenge where active = False and discarted = False''')
     data_inactive = cursor.fetchall()
     actives = dict()
     actives['active'] = data_active[0][0]

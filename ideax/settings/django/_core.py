@@ -22,8 +22,25 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 # Application definition
 
+SHARED_APPS = [    
+    'ideax.tenant',
+]
+
+TENANT_APPS = [    
+    # The following Django contrib apps must be in TENANT_APPS
+    'django.contrib.contenttypes',
+    'django.contrib.auth',
+    'ideax.ideax',
+    'ideax.users',
+    'django.contrib.admin',        
+    'django.contrib.sessions',
+    'django.contrib.messages',
+]
 
 INSTALLED_APPS = [
+    'tenant_schemas',  # mandatory, should always be before any django app
+    'ideax.users.UserConfig',    
+    'ideax.tenant',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -32,13 +49,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'widget_tweaks',
-    'ideax.users.UserConfig',
     'ideax.ideax.IdeaxConfig',
     'ideax.administration.AdministrationConfig',
     'mptt',
 ]
 
-MIDDLEWARE = [
+TENANT_MODEL = "tenant.Client"
+
+MIDDLEWARE = [    
+    'ideax.users.middleware.EmailTenantMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     # 'django.middleware.locale.LocaleMiddleware',
@@ -47,6 +66,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'ideax.users.middleware.TenantCookieMiddleware',
 ]
 
 ROOT_URLCONF = 'ideax.urls'
@@ -76,10 +96,28 @@ WSGI_APPLICATION = 'ideax.wsgi.application'
 
 default_dburl = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
 
+#DATABASES = {
+#    #'default': config('DATABASE_URL', default=default_dburl, cast=dburl),
+#    'default': {
+#        'ENGINE': 'tenant_schemas.postgresql_backend',
+#        # ..
+#    }
+#}
+
 DATABASES = {
-    'default': config('DATABASE_URL', default=default_dburl, cast=dburl),
+    'default': {
+        'ENGINE': 'tenant_schemas.postgresql_backend',
+        'NAME': 'tutorial',
+        'USER': 'tutorial',
+        'PASSWORD': 'tutorial',
+        'HOST': 'localhost',
+        'PORT': '',            # Set to empty string for default.
+    }
 }
 
+DATABASE_ROUTERS = (
+    'tenant_schemas.routers.TenantSyncRouter',
+)
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 

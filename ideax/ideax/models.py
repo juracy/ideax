@@ -6,6 +6,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
+from ideax.tenant.storage import TenantFileSystemStorageIdeax
 
 
 class Phase(Enum):
@@ -77,7 +78,7 @@ class Category(models.Model):
 
 class Category_Image(models.Model):  # noqa
     description = models.CharField(max_length=50)
-    image = models.ImageField(upload_to='category/')
+    image = models.ImageField(upload_to='category/', storage=TenantFileSystemStorageIdeax())
     category = models.ForeignKey('Category', models.SET_NULL, null=True)
 
     @classmethod
@@ -131,7 +132,7 @@ class Idea(models.Model):
 
 
 class Challenge(models.Model):
-    image = models.ImageField(upload_to='challenges/')
+    image = models.ImageField(upload_to='challenges/', storage=TenantFileSystemStorageIdeax())
     title = models.CharField(max_length=100)
     summary = models.TextField(max_length=140, null=True, blank=False)
     requester = models.CharField(max_length=140, null=True, blank=False)
