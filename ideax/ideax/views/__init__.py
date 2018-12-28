@@ -27,7 +27,7 @@ from martor.utils import LazyEncoder
 
 from ...users.models import UserProfile
 from ..models import (
-    Idea, Criterion, Popular_Vote, Phase, Phase_History,
+    Idea, Criterion, Popular_Vote, Phase, Phase_History, IdeaPhase,
     Comment, Evaluation, Category_Image, Challenge, Dimension,
 )
 from ..forms import IdeaForm, CriterionForm, EvaluationForm, ChallengeForm
@@ -58,6 +58,19 @@ def idea_list(request):
     ideas = get_ideas_init(request)
     ideas['phases'] = get_phases_count()
 
+    ideas['idea_phase'] = IdeaPhase.objects.all()
+    #qtdade de ideias na fase em cada fase que não esteja descartada,
+
+    #IdeaPhase.objects.filter(idea__discarded=False)#.annotate(qtd=Count(phase_history__idea_id))
+
+#    print(ideas['idea_phase'].query)
+
+    # ideas = Idea.objects.filter(
+    #     discarded=False,
+    #     phase_history__current_phase=phase_pk,
+    #     phase_history__current=1).annotate(
+    #         count_like=Count(Case(When(popular_vote__like=True, then=1)))).order_by('-count_like')
+
     page = request.GET.get('page', 1)
     paginator = Paginator(ideas['ideas'], 5)
 
@@ -72,9 +85,9 @@ def idea_list(request):
 
 def get_phases_count():
     cursor = connection.cursor()
-    cursor.execute('''select current_phase as phase, count(*) as qtd
+    cursor.execute('''select current_phase_id as phase, count(*) as qtd
                       from ideax_phase_history ph inner join ideax_idea i on ph.idea_id = i.id
-                      where ph.current =1 and i.discarded = 0 group by current_phase order by phase''')
+                      where ph.current =1 and i.discarded = 0 group by current_phase_id order by phase''')
     data = cursor.fetchall()
 
     phases = dict()
@@ -463,15 +476,14 @@ def get_ideas_created(request):
 @permission_required('ideax.add_phase_history', raise_exception=True)
 def change_idea_phase(request, pk, new_phase):
     idea = Idea.objects.get(pk=pk)
-    phase = Phase.get_phase_by_id(new_phase)
-
+    phase = IdeaPhase.objects.get(pk=new_phase)
     if phase is not None:
         phase_history_current = Phase_History.objects.get(idea=idea, current=True)
         phase_history_current.current = False
         phase_history_current.save()
 
-        phase_history_new = Phase_History(current_phase=phase.id,
-                                          previous_phase=phase_history_current.current_phase,
+        phase_history_new = Phase_History(current_phase_id=phase.id,
+                                          previous_phase=phase_history_current.current_phase.id,
                                           date_change=timezone.now(),
                                           idea=idea,
                                           author=UserProfile.objects.get(user=request.user),
@@ -518,6 +530,8 @@ def idea_detail(request, pk):
     idea = get_object_or_404(Idea, pk=pk)
     timeline_phase_history = idea.phase_history_set.all()
     timeline_evaluation = idea.evaluation_set.last()
+    #timeline_current_phase = idea.phase_history_set.last()
+
 
     data = dict()
     data["comments"] = idea.comment_set.filter(deleted=False)
@@ -527,6 +541,9 @@ def idea_detail(request, pk):
     data["creation_date"] = idea.creation_date.strftime("%d/%m/%Y")
     data["timeline"] = sort_timeline(list(timeline_phase_history), timeline_evaluation)
     data['phases'] = get_phases_count()
+    #data['current_idea_phase'] = timeline_current_phase.current_phase
+
+
 
     initial = collections.OrderedDict()
     form_ = None

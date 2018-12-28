@@ -58,6 +58,12 @@
               <div class="dropdown-menu dropdown-menu-right text-right">
                 {%if perms.ideax.manage_idea %}
                   <h6 class="dropdown-header">{% trans 'Idea Stage' %}</h6>
+                  {% for value in idea_phase %}
+                    <button id="idea_phase_change_to_1" class="dropdown-item" onclick="location.href='{% url 'change_phase' pk=idea.pk new_phase=value.id%}';" type="button">{{value}}</button>
+                  {% endfor %}
+
+
+
                   <button id="idea_phase_change_to_1"class="dropdown-item" onclick="location.href='{% url 'change_phase' pk=idea.pk new_phase=1%}';" type="button">{% trans 'Discussion' %}</button>
                   <button id="idea_phase_change_to_2"class="dropdown-item" onclick="location.href='{% url 'change_phase' pk=idea.pk new_phase=2%}';" type="button">{% trans 'Evaluation' %}</button>
                   <button id="idea_phase_change_to_3"class="dropdown-item" onclick="location.href='{% url 'change_phase' pk=idea.pk new_phase=3%}';" type="button">{% trans 'Ideation' %}</button>

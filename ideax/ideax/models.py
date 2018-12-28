@@ -8,6 +8,17 @@ from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 
 
+class IdeaPhase(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField(max_length=500, blank=True,  null=True)
+    order = models.PositiveSmallIntegerField(default=False)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Idea Phase"
+
 class Phase(Enum):
     GROW = (1, _('Discussion'), 'discussion', 'comments')
     RATE = (2, _('Evaluation'), 'rate', 'clipboard')
@@ -27,27 +38,27 @@ class Phase(Enum):
     @classmethod
     def choices(cls):
         return tuple((x.id, x.description) for x in cls)
-
     @classmethod
     def get_phase_by_id(cls, id):
         for temp in cls:
             if temp.id == id:
                 return temp
         return None
-
     # TODO: Unused method equals to get_phase_by_id
+
     @classmethod
     def get_css_class(cls, id):
         return cls.get_phase_by_id(id)
 
-
 class Phase_History(models.Model):  # noqa
-    current_phase = models.PositiveSmallIntegerField()
+    #current_phase = models.PositiveSmallIntegerField()
+    current_phase = models.ForeignKey('IdeaPhase', on_delete=models.DO_NOTHING)
     previous_phase = models.PositiveSmallIntegerField()
     date_change = models.DateTimeField('data da mudança')
     idea = models.ForeignKey('Idea', on_delete=models.DO_NOTHING)
     author = models.ForeignKey('users.UserProfile', on_delete=models.DO_NOTHING)
     current = models.BooleanField()
+
 
 
 class Criterion(models.Model):
