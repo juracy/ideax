@@ -111,11 +111,11 @@ default_dburl = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')
 DATABASES = {
     'default': {
         'ENGINE': 'tenant_schemas.postgresql_backend',
-        'NAME': 'tutorial',
-        'USER': 'tutorial',
-        'PASSWORD': 'tutorial',
-        'HOST': 'localhost',
-        'PORT': '',            # Set to empty string for default.
+        'NAME': config('DATABASE_NAME'),
+        'USER': config('DATABASE_USER'),
+        'PASSWORD': config('DATABASE_PASSWORD'),
+        'HOST': config('DATABASE_HOST'),
+        'PORT': config('DATABASE_PORT', default=""),            # Set to empty string for default.
     }
 }
 

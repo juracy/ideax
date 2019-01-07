@@ -7,7 +7,7 @@ RUN \
 
 RUN \
     cd /var/www; \
-    wget -q -O ideax.tar.gz https://github.com/dataprev/ideax/archive/master.tar.gz; \
+    wget -q -O ideax.tar.gz https://github.com/dataprev/ideax/archive/dataprev/tenant.tar.gz; \
     tar xf ideax.tar.gz; \
     mv ideax-master ideax; \
     rm ideax.tar.gz; \
