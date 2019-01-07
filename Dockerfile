@@ -9,7 +9,7 @@ RUN \
     cd /var/www; \
     wget -q -O ideax.tar.gz https://github.com/dataprev/ideax/archive/dataprev/tenant.tar.gz; \
     tar xf ideax.tar.gz; \
-    mv ideax-master ideax; \
+    mv ideax-dataprev-tenant ideax; \
     rm ideax.tar.gz; \
     cd ideax; \
     pip install -r requirements/prod.txt
