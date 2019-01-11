@@ -13,14 +13,14 @@ class LDAPBackendByTenant(LDAPBackend):
                              filterstr=configuration.user_filter)
 
         di = dict()
-        di['USER_SEARCH']=ldap_se
-        di['BIND_DN']=configuration.bind_dn
-        di['BIND_PASSWORD']=configuration.bind_password
-        di['SERVER_URI']=configuration.host        
+        di['USER_SEARCH'] = ldap_se
+        di['BIND_DN'] = configuration.bind_dn
+        di['BIND_PASSWORD'] = configuration.bind_password
+        di['SERVER_URI'] = configuration.host
 
         settings = LDAPSettings(defaults=di)
         ldap.settings = settings
 
         return ldap.authenticate(request,
-                                 request.POST.get('username',''),
-                                 request.POST.get('password',''))
+                                 request.POST.get('username', ''),
+                                 request.POST.get('password', ''))
