@@ -1,10 +1,8 @@
 import random
-from enum import Enum
 
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 
 
@@ -26,7 +24,6 @@ class Phase_History(models.Model):  # noqa
     idea = models.ForeignKey('Idea', on_delete=models.DO_NOTHING)
     author = models.ForeignKey('users.UserProfile', on_delete=models.DO_NOTHING)
     current = models.BooleanField()
-
 
 
 class Criterion(models.Model):
@@ -98,8 +95,7 @@ class Idea(models.Model):
         return self.phase_history_set.get(current=True)
 
     def get_current_phase(self):
-         return self.phase_history_set.values('current_phase_id').get(current=True)
-
+        return self.phase_history_set.values('current_phase_id').get(current=True)
 
     def get_absolute_url(self):
         return "/idea/%i/" % self.id

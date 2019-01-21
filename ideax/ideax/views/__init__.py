@@ -69,10 +69,11 @@ def idea_list(request):
         ideas['ideas'] = paginator.page(paginator.num_pages)
     return render(request, 'ideax/idea_list.html', ideas)
 
+
 def get_phases_count():
     return IdeaPhase.objects.annotate(qtd=Count("phase_history__idea_id",
-                                      filter=Q(phase_history__idea__discarded=False,
-                                      phase_history__current=1))).order_by('order')
+                                      filter=Q(phase_history__idea__discarded=False, phase_history__current=1))
+                                      ).order_by('order')
 
 
 @login_required
@@ -89,6 +90,7 @@ def get_ideas_init(request):
     ideas_dic['ideas_created_by_me'] = get_ideas_created(request)
     ideas_dic['challenges'] = get_featured_challenges()
     return ideas_dic
+
 
 def idea_filter(request, phase_pk=None, search_part=None):
     if phase_pk:
@@ -164,7 +166,7 @@ def save_idea(request, form, template_name, new=False):
                     idea.category_image = category_image.image.url
                 idea.save()
                 idea.authors.add(idea.author)
-                phase_history = Phase_History(current_phase=IdeaPhase.objects.get(order = 1),
+                phase_history = Phase_History(current_phase=IdeaPhase.objects.get(order=1),
                                               previous_phase=0,
                                               date_change=timezone.now(),
                                               idea=idea,
@@ -206,7 +208,8 @@ def idea_new(request):
 def idea_edit(request, pk):
     idea = get_object_or_404(Idea, pk=pk)
     discussion_phase_id = IdeaPhase.objects.values('id').get(order=1)['id']
-    if ((request.user.userprofile == idea.author and idea.get_current_phase()['current_phase_id'] == discussion_phase_id) or
+    if ((request.user.userprofile == idea.author
+            and idea.get_current_phase()['current_phase_id'] == discussion_phase_id) or
             request.user.has_perm(settings.PERMISSIONS["MANAGE_IDEA"])):
         queryset = get_authors(request.user.email)
         if request.method == "POST":
@@ -228,7 +231,8 @@ def idea_remove(request, pk):
     idea = get_object_or_404(Idea, pk=pk)
     data = dict()
     discussion_phase_id = IdeaPhase.objects.values('id').get(order=1)['id']
-    if ((request.user.userprofile == idea.author and idea.get_current_phase()['current_phase_id'] == discussion_phase_id)
+    if ((request.user.userprofile == idea.author
+            and idea.get_current_phase()['current_phase_id'] == discussion_phase_id)
             or request.user.has_perm(settings.PERMISSIONS["MANAGE_IDEA"])):
         if request.method == 'POST':
             idea.discarded = True
@@ -498,9 +502,6 @@ def idea_detail(request, pk):
     idea = get_object_or_404(Idea, pk=pk)
     timeline_phase_history = idea.phase_history_set.all()
     timeline_evaluation = idea.evaluation_set.last()
-    #timeline_current_phase = idea.phase_history_set.last()
-
-
     data = dict()
     data["comments"] = idea.comment_set.filter(deleted=False)
     data["idea"] = idea
