@@ -78,9 +78,10 @@ def get_phases_count():
 @login_required
 def get_ideas_init(request):
     ideas_dic = dict()
+    ideas_dic['phase_req'] = IdeaPhase.objects.values('id').get(order=1)['id']
     ideas_dic['ideas'] = Idea.objects.filter(
         discarded=False,
-        phase_history__current_phase=1,
+        phase_history__current_phase=ideas_dic['phase_req'],
         phase_history__current=1).annotate(
             count_like=Count(Case(When(popular_vote__like=True, then=1)))).order_by('-count_like')
     ideas_dic['ideas_liked'] = get_ideas_voted(request, True)
