@@ -1414,3 +1414,10 @@ nav .avatar img {
         overflow: hidden;
     }
 }
+
+.auth_configuration {
+  text-align: center;
+  font-size: 20px;
+  color: #dc3545;
+  padding: 25px;
+}

@@ -1,16 +1,20 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, views as auth_views
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import CreateView
 from django.db.models import Count, Case, When
 from django.db import connection
-from .forms import SignUpForm
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from tenant_schemas.utils import get_tenant_model
+from .forms import SignUpForm, AuthConfigurationForm
 from .utils import set_connection
 from ..ideax.models import Popular_Vote, Comment, Idea
-from .models import UserProfile
+from .models import UserProfile, AuthConfiguration
+
 
 
 @login_required
@@ -75,7 +79,54 @@ class SignUpView(CreateView):
 def login(request):
     if request.method == "POST":
         email = request.POST.get('username', '')
-        hostname = email.split('@')[1]
-        set_connection(request, hostname)
+        try:
+            validate_email(email)
+            hostname = email.split('@')[1]
+            TenantModel = get_tenant_model()
+            set_connection(request, hostname)
+        except ValidationError as error:
+            messages.error(request, error.message)
+            return redirect('users:login')
+        except TenantModel.DoesNotExist:
+            messages.error(request, _('Tenant not found'))
+            return redirect('users:login')
+        except AssertionError:
+            messages.error(request, _('Invalid tenant model'))
+            return redirect('users:login')
+
         request.session['client'] = request.tenant.domain_url
     return auth_views.login(request)
+
+
+def check_authconfiguration(request):
+    if request.user.is_superuser:
+        if AuthConfiguration.objects.filter(active=True):
+            pass
+        else:
+            return redirect('users:set-configuration')
+        
+            
+@login_required
+def set_authconfiguration(request, new=False):
+    if request.method == "POST":
+        form = AuthConfigurationForm(request.POST)
+    else:
+        form = AuthConfigurationForm()
+
+    # AUDIT
+    return save_authconfiguration(request, form, 'configuration/configuration_new.html', True)
+
+
+def save_authconfiguration(request, form, template_name, new=False):
+    if request.method == "POST":
+        if form.is_valid():
+            auth_configuration = form.save(commit=False)
+            auth_configuration.active = True
+            auth_configuration.save()
+            messages.success(request, _('Configuration saved successfully!'))
+
+            if new:
+                return redirect('use_term_new')
+            return redirect('idea_list')
+
+    return render(request, template_name, {'form': form})

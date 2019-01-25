@@ -5,7 +5,6 @@
 {% block content %}
 
     <div class="login-box container text-center">
-
       {% if form.errors %}
         <!-- @TODO: Corrigir o problema nas mensagens de erro. -->
         <div class="alert alert-danger" style="margin-top: 100px;">
@@ -20,7 +19,7 @@
         <img class="mb-4" src="{% static 'images/idea_launch.png' %}" alt="" width="72">
         <h1 class="h3 mb-3 font-weight-normal">{% trans 'You must be logged in to access ideas.' %}</h1>
         <label for="id_username" class="sr-only">{% trans 'Username' %}</label>
-        {{ form.username|attr:'class:form-control'|attr:_('placeholder:username') }}
+        {{ form.username|attr:'class:form-control'|attr:_('placeholder:email') }}
         <label for="id_password" class="sr-only">{% trans 'Password' %}</label>
         {{ form.password|attr:'class:form-control'|attr:_('placeholder:password') }}
         <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans 'Sign in' %}</button>

@@ -1,11 +1,15 @@
 from django_auth_ldap.backend import *
+from django.core.exceptions import PermissionDenied
 from .models import AuthConfiguration
 
 
 class LDAPBackendByTenant(LDAPBackend):
 
     def authenticate(self, request=None, username=None, password=None, **kwargs):
-        configuration = AuthConfiguration.objects.get(active=True)
+        try:
+            configuration = AuthConfiguration.objects.get(active=True)
+        except AuthConfiguration.DoesNotExist:
+            raise PermissionDenied
 
         ldap = LDAPBackend()
         ldap_se = LDAPSearch(base_dn=configuration.user_search_base,
