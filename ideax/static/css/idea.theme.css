@@ -1267,9 +1267,26 @@ body {
     float: right;
   }
 
+<<<<<<< HEAD
   .selector {
     float: none !important;
     overflow: auto;
+=======
+@media
+only screen and (max-width: 760px),
+(min-width: 768px) and (max-width: 1024px)  {
+
+  .challenge-item .challenge-buttons {
+    right: 15px;
+    bottom: 80px;
+  }
+  .carousel-challenge {
+    display: block !important;
+  }
+
+  table, thead, tbody, th, td, tr {
+    display: block;
+>>>>>>> ca201799e91e64e762fe97fb0d63630c45d15ffa
   }
 
   .selector select {
@@ -1457,6 +1474,21 @@ nav .avatar img {
 }
 
 .notifications-header a:hover{
+.challenge-buttons{
+  position: absolute;
+  right: -50px;
+  bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 5px;
+  transition: all 0.3s;
+}
+
+.challenge-item:hover .challenge-buttons{
+  right: 15px;
+  bottom: 80px;
+}
 
     background: rgb(50, 111, 255);
 }
@@ -1489,4 +1521,8 @@ a.notification-item svg{
       text-align: center;
       display: block;
       margin: 0;
+}
+.challenge-buttons, .edit, .delete{
+
+  color: #ffffff !important;
 }
