@@ -4,7 +4,7 @@ from enum import Enum
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _ # noqa
 from mptt.models import MPTTModel, TreeForeignKey
 
 

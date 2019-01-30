@@ -1,7 +1,8 @@
 import os
 
+from PIL import Image
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _ # noqa
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.conf import settings
 from tinymce import TinyMCE
@@ -82,6 +83,11 @@ class CategoryImageForm(forms.ModelForm):
 
 
 class ChallengeForm(forms.ModelForm):
+    x = forms.FloatField(widget=forms.HiddenInput())
+    y = forms.FloatField(widget=forms.HiddenInput())
+    width = forms.FloatField(widget=forms.HiddenInput())
+    height = forms.FloatField(widget=forms.HiddenInput())
+
     description = MartorFormField(
         label=_('Description'),
         max_length=Challenge._meta.get_field('description').max_length
@@ -92,6 +98,10 @@ class ChallengeForm(forms.ModelForm):
         fields = (
             'title',
             'image',
+            'x',
+            'y',
+            'width',
+            'height',
             'summary',
             'requester',
             'description',
@@ -115,6 +125,41 @@ class ChallengeForm(forms.ModelForm):
             'limit_date': forms.DateInput(attrs={'placeholder': 'dd/mm/aaaa'}),
             'init_date': forms.DateInput(attrs={'placeholder': 'dd/mm/aaaa'}),
         }
+
+    def save(self):
+        data = self.cleaned_data
+
+        challenge = Challenge(title=data['title'],
+                              image=data['image'],
+                              summary=data['summary'],
+                              requester=data['requester'],
+                              description=data['description'],
+                              limit_date=data['limit_date'],
+                              init_date=data['init_date'],
+                              active=data['active'],
+                              featured=data['featured'],
+                              category=data['category'],
+                              discarted=False)
+
+        x = self.cleaned_data.get('x')
+        y = self.cleaned_data.get('y')
+        w = self.cleaned_data.get('width')
+        h = self.cleaned_data.get('height')
+
+        image = Image.open(challenge.image)
+        cropped_image = image.crop((x, y, w+x, h+y))
+
+        img_path = challenge.image.path.split('/')
+        img_name = img_path.pop()
+        img_path.append('challenges')
+        img_path.append(img_name)
+        img_path = "/".join(img_path)
+
+        cropped_image.save(img_path, format='JPEG', subsampling=0, quality=100)
+
+        challenge.image = '/challenges/'+img_name
+
+        return challenge
 
 
 class UseTermForm(forms.ModelForm):

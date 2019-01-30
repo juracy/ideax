@@ -1,7 +1,6 @@
 {% extends "ideax/base.html" %}
 {% load widget_tweaks staticfiles i18n %}
 
-{% trans "Your username and password didn't match. Please try again." as login_error_message %}
 {% block content %}
 
     <div class="login-box container text-center">
@@ -10,7 +9,7 @@
         <!-- @TODO: Corrigir o problema nas mensagens de erro. -->
         <div class="alert alert-danger" style="margin-top: 100px;">
           <div class="login_error_message">
-            {{ login_error_message }}
+            {% trans "Your username and password didn't match. Please try again." %}
           </div>
         </div>
       {% endif %}

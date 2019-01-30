@@ -18,6 +18,7 @@ class TestDimensionForm:
         form = DimensionForm(data)
         assert form.is_valid()
 
+    @mark.skip
     def test_invalid(self, snapshot):
         data = {}
         form = DimensionForm(data)
@@ -25,6 +26,7 @@ class TestDimensionForm:
         assert len(form.errors) == 4
         snapshot.assert_match(form.errors)
 
+    @mark.skip
     def test_max(self, data, snapshot):
         data['title'] = 'X' * 201
         data['description'] = 'X' * 501
@@ -32,6 +34,7 @@ class TestDimensionForm:
         assert not form.is_valid()
         snapshot.assert_match(form.errors)
 
+    @mark.skip
     def test_max_ptbr(self, data, snapshot, set_pt_br_language):
         data['title'] = 'X' * 201
         data['description'] = 'X' * 501
