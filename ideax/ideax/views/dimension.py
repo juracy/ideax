@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _ # noqa
 
 from ...util import get_client_ip, audit
 from ..forms import DimensionForm

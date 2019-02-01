@@ -1,10 +1,12 @@
 from django.urls import path, re_path
-from django.conf.urls import url
+from django.conf.urls import include, url
+import notifications.urls
 
 from . import views
 from .feeds import CommentFeed, NewIdeaFeed
 
 urlpatterns = [
+    url('^inbox/notifications/', include(notifications.urls, namespace='notifications')),
     path('', views.index, name='index'),
     path('idea/list', views.idea_list, name='idea_list'),
     path('idea/<int:pk>/', views.idea_detail, name='idea_detail'),
@@ -56,7 +58,7 @@ urlpatterns = [
     path('dimension/<int:pk>/edit/', views.dimension_edit, name='dimension_edit'),
     path('dimension/<int:pk>/remove/', views.dimension_remove, name='dimension_remove'),
     re_path('author/', views.user_profile_page, name='user_profile_page'),
-
+    path('notifications/dismiss/', views.mark_notifications_as_read, name='mark_notifications_as_read'),
     # TODO: Refactor it
     url(r'^media/uploader/$', views.markdown_uploader, name='markdown_uploader_page'),
 ]

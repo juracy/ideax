@@ -7,29 +7,11 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestCategoryForm.test_invalid 1'] = {
-    'description': [
-        'This field is required.'
-    ],
-    'title': [
-        'This field is required.'
-    ]
-}
-
-snapshots['TestCategoryForm.test_max 1'] = {
+snapshots['TestCategoryForm.test_max_ptbr 1'] = {
     'description': [
         'Ensure this value has at most 200 characters (it has 201).'
     ],
     'title': [
         'Ensure this value has at most 50 characters (it has 51).'
-    ]
-}
-
-snapshots['TestCategoryForm.test_max_ptbr 1'] = {
-    'description': [
-        'Certifique-se de que o valor tenha no máximo 200 caracteres (ele possui 201).'
-    ],
-    'title': [
-        'Certifique-se de que o valor tenha no máximo 50 caracteres (ele possui 51).'
     ]
 }

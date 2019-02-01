@@ -571,6 +571,79 @@ function ideaView(ideaView){
     }
 }
 
+/* SCRIPT TO OPEN THE MODAL WITH THE PREVIEW */
+$(document).ready(function (){
+    $("#id_image").change(function () {
+        if (this.files && this.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+        $("#image").attr("src", e.target.result);
+        $("#modalCrop").modal("show");
+        }
+        reader.readAsDataURL(this.files[0]);
+        }
+    });
+
+        /* SCRIPTS TO HANDLE THE CROPPER BOX */
+        var $image = $("#image");
+        var cropBoxData;
+        var canvasData;
+    $("#modalCrop").on("shown.bs.modal", function () {
+        $image.cropper({
+        viewMode: 1,
+        movable: true,
+        zoomable: true,
+        rotatable: false,
+        scalable: false,
+        aspectRatio: 4.5/1,
+        minCropBoxWidth: 50,
+        minCropBoxHeight: 20,
+        ready: function () {
+        $image.cropper("setCanvasData", canvasData);
+        $image.cropper("setCropBoxData", cropBoxData);
+        }
+        });
+    }).on("hidden.bs.modal", function () {
+        cropBoxData = $image.cropper("getCropBoxData");
+        canvasData = $image.cropper("getCanvasData");
+        $image.cropper("destroy");
+        });
+
+        $(".js-zoom-in").click(function (e) {
+          e.preventDefault()
+          $image.cropper("zoom", 0.1);
+        });
+
+        $(".js-zoom-out").click(function (e) {
+          e.preventDefault()
+          $image.cropper("zoom", -0.1);
+        });
+
+        $(".js-crop-and-upload").click(function (e) {
+            e.preventDefault()
+            var cropData = $image.cropper("getData");
+            $("#id_x").val(cropData["x"]);
+            $("#id_y").val(cropData["y"]);
+            $("#id_height").val(cropData["height"]);
+            $("#id_width").val(cropData["width"]);
+            $("#modalCrop").modal('hide');
+            //$("#formUpload").submit();
+        });
+});
+
+function dismissAll(){
+    console.log("dismissAll")
+    $.ajax({
+        url: '/notifications/dismiss/',
+        dataType: 'json',
+        success: function (data) {
+
+        var notifHtml = '<ul style="padding: 5px;">No new notifications!</ul>'
+        $('#notificationsDropdownMenu').html(notifHtml);
+        $('#notificationCount').text("0");
+        }
+    });
+}
 //end of toggle grid/list view
 
 //chatbot
