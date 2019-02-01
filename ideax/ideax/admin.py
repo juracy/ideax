@@ -6,9 +6,11 @@ from .models import (
     Dimension, Category_Dimension, Evaluation, Category_Image, Use_Term, Challenge, IdeaPhase
 )
 
+
 class IdeaPhaseAdmin(admin.ModelAdmin):
     list_display = ['name', 'order']
     ordering = ('order',)
+
 
 admin.site.register(Idea)
 admin.site.register(Popular_Vote)
