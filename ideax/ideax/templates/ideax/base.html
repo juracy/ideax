@@ -1,5 +1,6 @@
 {% load staticfiles i18n %}
 {% load gravatar %}
+{% load notifications_tags %}
 <!-- Current language: {{request.LANGUAGE_CODE }} -->
 <!-- -->
 
@@ -14,6 +15,8 @@
         <link rel="stylesheet" href="{% static 'css/idea.theme.css' %}">
         <link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}">
         <link rel="stylesheet" href="{% static 'css/timeline.css' %}">
+        <link rel="stylesheet" href="{% static 'css/cropper.min.css' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.4.3/cropper.min.css" />
         <!-- Temas Selecionados -->
         {% comment %} <link rel="stylesheet" href="https://bootswatch.com/4/journal/bootstrap.min.css"> {% endcomment %}
         {% comment %} <link rel="stylesheet" href="https://bootswatch.com/4/simplex/bootstrap.min.css"> {% endcomment %}
@@ -53,6 +56,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
           {% if user.is_authenticated %}
+          {%block nav%}
           <ul class="navbar-nav mx-auto"></ul>
           <ul class="navbar-nav">
             <span class="navbar-text avatar">
@@ -61,13 +65,39 @@
             <span class="navbar-text">
               {% blocktrans with name=user.username %}Hi, {{name}}!{% endblocktrans %}
             </span>
-            {% block nav %}
+            <div class="dropdown">
+                    <button style="background-color: Transparent;border: Transparent;" class="btn btn-secondary dropdown-toggle" type="button" id="notificationsDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <!-- <svg class="svg-inline--fa fa-bell fa-w-14" style="color: white;" aria-hidden="true" data-prefix="fas" data-icon="bell" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M433.884 366.059C411.634 343.809 384 316.118 384 208c0-79.394-57.831-145.269-133.663-157.83A31.845 31.845 0 0 0 256 32c0-17.673-14.327-32-32-32s-32 14.327-32 32c0 6.75 2.095 13.008 5.663 18.17C121.831 62.731 64 128.606 64 208c0 108.118-27.643 135.809-49.893 158.059C-16.042 396.208 5.325 448 48.048 448H160c0 35.346 28.654 64 64 64s64-28.654 64-64h111.943c42.638 0 64.151-51.731 33.941-81.941zM224 472a8 8 0 0 1 0 16c-22.056 0-40-17.944-40-40h16c0 13.234 10.766 24 24 24z"></path></svg> -->
+                      <i class="fas fa-bell" style="color:white;"> </i>
+                      <span id="notificationCount" style="background-color: Transparent; color: white;" class="badge badge-light">{{ qtde }}</span>
+                            </button>
+                    <div id="notificationsDropdownMenu" class="dropdown-menu dropdown-menu-right" aria-labelledby="notificationsDropdown">
+                      {% if boolnotify %}
+                        <p class="no-notif">{% trans 'No new notifications!' %}</p>
+                      {% else %}
+                        {% for notification in notifications %}
+                          {% if notification.verb == 'comment' or notification.verb == 'like' %}
+                            <a href="{% url 'idea_detail' pk=notification.target.pk %}" class="dropdown-item notification-item"><i class="{{ notification.data.icon_class }}"></i> {{notification.actor}} {{notification.description}} {% trans 'at' %} {{notification.timestamp|date:"d/m/Y H:i" }}</a>
+                          {% else %}
+                             <a href="{% url 'idea_detail' pk=notification.target.pk %}" class="dropdown-item notification-item"><i class="{{ notification.data.icon_class }}"></i>{{notification.description}}</a>
+                          {% endif %}
+                        {% endfor%}
+                        <div class="dropdown-header notifications-header">
+                                <h6>Mark all as read</h6>
+                                <a href="" onclick="dismissAll()">
+                                    <i class="fas fa-check"></i>
+                                </a>
+                        </div>
+                      {% endif %}
+                    </div>
+            </div>
+           {% endblock %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bars fa-lg"></i>
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item"  href="{% url 'users:profile' pk=0 %}">{% trans 'Profile' %}</a>
+                <a class="dropdown-item"  href="{% url 'users:profile' username=user.username %}">{% trans 'Profile' %}</a>
                 <a class="dropdown-item"  href="{% url 'users:whoinnovates' %}">{% trans 'Who Innovates' %}</a>
                 <hr>
                 <a class="dropdown-item"  href="/">{% trans 'Explore Ideas' %}</a>
@@ -80,7 +110,6 @@
                 <a class="dropdown-item" href="{% url 'users:logout' %}">{% trans 'Logout' %}</i></a>
               </div>
             </li>
-            {% endblock %}
           </ul>
 
           {% else %}
@@ -138,6 +167,8 @@
       <script src="{% static '/js/modal.js' %}"></script>
       <script src="{% static '/js/dashboard.js' %}"></script>
       <script src="{% static '/js/timeline.js' %}"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.4.3/cropper.min.js" integrity="sha256-xqnUCb6f1p7h5IqwwOJ7kHsGm9bRUgsrUe3VQNuqzUE=" crossorigin="anonymous"></script>
+
       {% block footer %}
         <!--script bootstrap-->
         <script src="{% static '/js/bootstrap.min.js' %}"></script>

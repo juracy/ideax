@@ -14,7 +14,7 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.db.models import Count, Case, When, Q
 from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _ # noqa
 from django.http import HttpResponse
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage, default_storage
@@ -23,7 +23,9 @@ from django.http import StreamingHttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files.base import ContentFile
 from ideax.settings.django._core import GOOGLE_RECAPTCHA_SECRET_KEY, GOOGLE_RECAPTCHA_URL
-from martor.utils import LazyEncoder
+from martor.utils import LazyEncoder, markdownify
+from bs4 import BeautifulSoup
+from notifications.signals import notify
 
 from ...users.models import UserProfile
 from ..models import (
@@ -51,6 +53,15 @@ def index(request):
         audit(request.user.username, get_client_ip(request), 'LIST_IDEAS_PAGE', Idea.__name__, '')
         return idea_list(request)
     return render(request, 'ideax/index.html')
+
+
+def mark_notifications_as_read(request):
+    notifications = request.user.notifications.unread()
+    notifications.mark_all_as_read()
+    data = {
+            'size': 0
+           }
+    return JsonResponse(data)
 
 
 @login_required
@@ -193,10 +204,27 @@ def save_idea(request, form, template_name, new=False):
             if form.cleaned_data['authors']:
                 for author in form.cleaned_data['authors']:
                     idea.authors.add(author)
+                    notify.send(request.user,
+                                icon_class="fas fa-plus",
+                                recipient=author.user,
+                                description=_("You're a co-author of a new idea!"),
+                                target=idea,
+                                verb='author')
             messages.success(request, _('Idea saved successfully!'))
             audit(request.user.username, get_client_ip(request), 'SAVE_IDEA_OPERATION',
                   Idea.__name__, str(idea.id))
-
+            mark = markdownify(idea.summary + idea.target + idea.oportunity + idea.solution)
+            string = BeautifulSoup(mark, 'html.parser')
+            usernames = list(set(username.text[1::] for username in
+                                 string.findAll('a', {'class': 'direct-mention-link'})))
+            for username in usernames:
+                user = UserProfile.objects.get(user__username=username)
+                notify.send(request.user,
+                            icon_class="fas fa-at",
+                            recipient=user.user,
+                            description=_("You have been mentioned in an idea!"),
+                            target=idea,
+                            verb='mention')
             return redirect('idea_list')
 
     return render(request, template_name, {'form': form})
@@ -372,7 +400,12 @@ def idea_evaluation(request, idea_pk):
             idea_score = soma/divisor
             idea.score = idea_score
             idea.save()
-
+            notify.send(idea.author.user,
+                        icon_class="far fa-check-square",
+                        recipient=idea.author.user,
+                        description=_("An idea of yours has ben evaluated"),
+                        target=idea,
+                        verb='evaluate')
             audit(
                 request.user.username,
                 get_client_ip(request),
@@ -414,6 +447,12 @@ def like_popular_vote(request, pk):
     if vote.count() == 0:
         like = Popular_Vote(like=like_boolean, voter=user, voting_date=timezone.now(), idea=idea_)
         like.save()
+        notify.send(request.user,
+                    icon_class="far fa-thumbs-up",
+                    recipient=idea_.author.user,
+                    description=_("liked your idea"),
+                    target=idea_,
+                    verb='like')
         audit(request.user.username, get_client_ip(request), 'LIKE_SAVE', Popular_Vote.__name__, str(like.id))
     else:
         if vote[0].like == like_boolean:
@@ -474,6 +513,12 @@ def change_idea_phase(request, pk, new_phase):
                                           author=UserProfile.objects.get(user=request.user),
                                           current=True)
         phase_history_new.save()
+        notify.send(idea.author.user,
+                    icon_class="far fa-check-square",
+                    recipient=idea.author.user,
+                    description=_("Your idea has reached a new phase!"),
+                    target=idea,
+                    verb='phase')
         audit(
             request.user.username,
             get_client_ip(request),
@@ -578,6 +623,12 @@ def post_comment(request):
                       ip=get_ip(request))
 
     comment.save()
+    notify.send(request.user,
+                icon_class="far fa-comment",
+                recipient=idea.author.user,
+                description=_("commented on your idea"),
+                target=idea,
+                verb='comment')
     audit(request.user.username, get_client_ip(request), 'COMMENT_SAVE', Comment.__name__, str(comment.id))
     return JsonResponse({"msg": _("Your comment has been posted.")})
 
@@ -624,13 +675,12 @@ def challenge_detail(request, challenge_pk):
 @permission_required('ideax.add_challenge', raise_exception=True)
 def challenge_new(request):
     form = ChallengeForm()
-
     if request.method == "POST":
         form = ChallengeForm(request.POST, request.FILES)
 
         if form.is_valid():
             # path  = file_upload(request)
-            challenge = form.save(commit=False)
+            challenge = form.save()
             challenge.author = UserProfile.objects.get(user=request.user)
             challenge.creation_date = timezone.now()
             challenge.save()
@@ -648,8 +698,11 @@ def challenge_edit(request, challenge_pk):
         form = ChallengeForm(request.POST, request.FILES, instance=challenge)
 
         if form.is_valid():
-            challenge = form.save(commit=False)
-            challenge.save()
+            edit_challenge = form.save()
+            edit_challenge.creation_date = challenge.creation_date
+            edit_challenge.author = challenge.author
+            edit_challenge.pk = challenge.pk
+            edit_challenge.save()
             messages.success(request, _('Challenge saved successfully!'))
             return redirect('challenge_list')
     else:
@@ -852,6 +905,23 @@ def get_authors(removed_author):
         .exclude(user__email__isnull=True) \
         .exclude(user__email__exact='') \
         .exclude(user__email=removed_author)
+
+
+# def email_notification(request, idea, username, email, notification):
+#     subject = 'Assunto'
+#     message = 'mensagem'
+
+#     ctx = {
+#     'idea': idea.title,
+#     'username': username.username,
+#     'notification': notification,
+#     }
+
+#     message = render_to_string('ideax/email_notification.html', ctx)
+
+#     email = EmailMessage(subject=subject, body=message, to=[email])
+#     email.content_subtype = "html"
+#     email.send()
 
 
 __all__ = [

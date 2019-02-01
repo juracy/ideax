@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _ # noqa
 from django.views.generic import CreateView
 from django.db.models import Count, Case, When
 
@@ -13,19 +13,22 @@ from .models import UserProfile
 
 
 @login_required
-def profile(request, pk):
-    if pk == 0:
+def profile(request, username):
+
+    if request.user.username == username:
         votes = Popular_Vote.objects.filter(voter=request.user.id).values(
-            'voter_id').annotate(contador=Count(Case(When(like=True, then=1))))
+            'id').annotate(contador=Count(Case(When(like=True, then=1))))
         comments = Comment.objects.filter(author_id=request.user.id).values('raw_comment')
         filter_user = request.user
-        query_ideas = request.user.userprofile.authors.all()
+        query_ideas = request.user.userprofile.authors.filter(discarded=False)
     else:
+        user = UserProfile.objects.filter(user__username=username)
+        pk = user[0].id
         votes = Popular_Vote.objects.filter(voter=pk).values(
             'voter_id').annotate(contador=Count(Case(When(like=True, then=1))))
         comments = Comment.objects.filter(author_id=pk).values('raw_comment')
         filter_user = UserProfile.objects.filter(id=pk)[0].user
-        query_ideas = UserProfile.objects.filter(id=pk)[0].user.userprofile.authors.all()
+        query_ideas = UserProfile.objects.filter(id=pk)[0].user.userprofile.authors.filter(discarded=False)
     if not votes:
         getvotes = 0
     else:
@@ -34,11 +37,11 @@ def profile(request, pk):
         request,
         'users/profile.html',
         {
-            'user': filter_user,
+            'userP': filter_user,
             'ideas': query_ideas,
             'popular_vote': getvotes,
             'comments': len(comments),
-            'username': request.user,
+            'username': request.user.username,
         }
     )
 
