@@ -607,7 +607,7 @@ def post_comment(request):
                       parent=parent_object,
                       idea=idea,
                       date=timezone.now(),
-                      comment_phase=idea.get_current_phase().id,
+                      comment_phase=idea.get_current_phase()['current_phase_id'],
                       ip=get_ip(request))
 
     comment.save()
