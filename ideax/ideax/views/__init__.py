@@ -31,7 +31,7 @@ from ...users.models import UserProfile, AuthConfiguration
 from ...users.utils import check_authconfiguration
 from ...users.views import set_authconfiguration
 from ..models import (
-    Idea, Criterion, Popular_Vote, Phase, Phase_History,
+    Idea, Criterion, Popular_Vote, Phase_History, IdeaPhase,
     Comment, Evaluation, Category_Image, Challenge, Dimension,
 )
 from ..forms import IdeaForm, CriterionForm, EvaluationForm, ChallengeForm
@@ -80,8 +80,9 @@ def mark_notifications_as_read(request):
 @login_required
 def idea_list(request):
     ideas = get_ideas_init(request)
-    ideas['phases'] = get_phases_count()
+    ideas['idea_phase'] = get_phases_count()
 
+    ideas['idea_phase'] = IdeaPhase.objects.all()
     page = request.GET.get('page', 1)
     paginator = Paginator(ideas['ideas'], 5)
 
@@ -95,42 +96,25 @@ def idea_list(request):
 
 
 def get_phases_count():
-    cursor = connection.cursor()
-    cursor.execute('''select current_phase as phase, count(*) as qtd
-                      from ideax_phase_history ph inner join ideax_idea i on ph.idea_id = i.id
-                      where ph.current =True and i.discarded = False group by current_phase order by phase''')
-    data = cursor.fetchall()
-
-    phases = dict()
-    for i in Phase.choices():
-        phases[i[0]] = {'phase': i[1], 'qtd': 0}
-
-    for d in data:
-        phases[d[0]]['qtd'] = d[1]
-
-    return phases
+    return IdeaPhase.objects.annotate(qtd=Count("phase_history__idea_id",
+                                      filter=Q(phase_history__idea__discarded=False, phase_history__current=1))
+                                      ).order_by('order')
 
 
 @login_required
 def get_ideas_init(request):
     ideas_dic = dict()
+    ideas_dic['phase_req'] = IdeaPhase.objects.values('id').get(order=1)['id']
     ideas_dic['ideas'] = Idea.objects.filter(
         discarded=False,
-        phase_history__current_phase=1,
+        phase_history__current_phase=ideas_dic['phase_req'],
         phase_history__current=1).annotate(
             count_like=Count(Case(When(popular_vote__like=True, then=1)))).order_by('-count_like')
     ideas_dic['ideas_liked'] = get_ideas_voted(request, True)
     ideas_dic['ideas_disliked'] = get_ideas_voted(request, False)
     ideas_dic['ideas_created_by_me'] = get_ideas_created(request)
     ideas_dic['challenges'] = get_featured_challenges()
-    ideas_dic['phase_req'] = Phase.GROW.id
     return ideas_dic
-
-
-def get_phases():
-    phase_dic = dict()
-    phase_dic['phases'] = Phase.choices()
-    return phase_dic
 
 
 def idea_filter(request, phase_pk=None, search_part=None):
@@ -152,6 +136,7 @@ def idea_filter(request, phase_pk=None, search_part=None):
         'ideas_liked': get_ideas_voted(request, True),
         'ideas_disliked': get_ideas_voted(request, False),
         'ideas_created_by_me': get_ideas_created(request),
+        'idea_phase': get_phases_count()
     }
 
     data = dict()
@@ -165,7 +150,6 @@ def idea_filter(request, phase_pk=None, search_part=None):
         return JsonResponse(data)
     else:
         context['challenges'] = get_featured_challenges()
-        context['phases'] = get_phases_count()
         context['phase_req'] = phase_pk
         return render(request, 'ideax/idea_list.html', context)
 
@@ -197,7 +181,7 @@ def save_idea(request, form, template_name, new=False):
                 idea_autor = UserProfile.objects.get(user=request.user)
                 idea.author = idea_autor
                 idea.creation_date = timezone.now()
-                idea.phase = Phase.GROW.id
+                idea.phase = IdeaPhase.objects.values('id').get(order=1)
                 if(idea.challenge):
                     idea.category = idea.challenge.category
                     category_image = Category_Image.get_random_image(idea.challenge.category)
@@ -207,7 +191,7 @@ def save_idea(request, form, template_name, new=False):
                     idea.category_image = category_image.image.url
                 idea.save()
                 idea.authors.add(idea.author)
-                phase_history = Phase_History(current_phase=Phase.GROW.id,
+                phase_history = Phase_History(current_phase=IdeaPhase.objects.get(order=1),
                                               previous_phase=0,
                                               date_change=timezone.now(),
                                               idea=idea,
@@ -265,8 +249,9 @@ def idea_new(request):
 @permission_required('ideax.change_idea', raise_exception=True)
 def idea_edit(request, pk):
     idea = get_object_or_404(Idea, pk=pk)
-
-    if ((request.user.userprofile == idea.author and idea.get_current_phase() == Phase.GROW) or
+    discussion_phase_id = IdeaPhase.objects.values('id').get(order=1)['id']
+    if ((request.user.userprofile == idea.author
+            and idea.get_current_phase()['current_phase_id'] == discussion_phase_id) or
             request.user.has_perm(settings.PERMISSIONS["MANAGE_IDEA"])):
         queryset = get_authors(request.user.email)
         if request.method == "POST":
@@ -287,8 +272,9 @@ def idea_edit(request, pk):
 def idea_remove(request, pk):
     idea = get_object_or_404(Idea, pk=pk)
     data = dict()
-
-    if ((request.user.userprofile == idea.author and idea.get_current_phase() == Phase.GROW)
+    discussion_phase_id = IdeaPhase.objects.values('id').get(order=1)['id']
+    if ((request.user.userprofile == idea.author
+            and idea.get_current_phase()['current_phase_id'] == discussion_phase_id)
             or request.user.has_perm(settings.PERMISSIONS["MANAGE_IDEA"])):
         if request.method == 'POST':
             idea.discarded = True
@@ -515,15 +501,14 @@ def get_ideas_created(request):
 @permission_required('ideax.add_phase_history', raise_exception=True)
 def change_idea_phase(request, pk, new_phase):
     idea = Idea.objects.get(pk=pk)
-    phase = Phase.get_phase_by_id(new_phase)
-
+    phase = IdeaPhase.objects.get(pk=new_phase)
     if phase is not None:
         phase_history_current = Phase_History.objects.get(idea=idea, current=True)
         phase_history_current.current = False
         phase_history_current.save()
 
-        phase_history_new = Phase_History(current_phase=phase.id,
-                                          previous_phase=phase_history_current.current_phase,
+        phase_history_new = Phase_History(current_phase_id=phase.id,
+                                          previous_phase=phase_history_current.current_phase.id,
                                           date_change=timezone.now(),
                                           idea=idea,
                                           author=UserProfile.objects.get(user=request.user),
@@ -539,7 +524,7 @@ def change_idea_phase(request, pk, new_phase):
             request.user.username,
             get_client_ip(request),
             'CHANGE_PHASE_SAVE',
-            Phase.__name__,
+            phase.name,
             str(phase_history_new.id)
         )
         messages.success(request, _('Phase change successfully!'))
@@ -576,7 +561,6 @@ def idea_detail(request, pk):
     idea = get_object_or_404(Idea, pk=pk)
     timeline_phase_history = idea.phase_history_set.all()
     timeline_evaluation = idea.evaluation_set.last()
-
     data = dict()
     data["comments"] = idea.comment_set.filter(deleted=False)
     data["idea"] = idea
@@ -584,7 +568,7 @@ def idea_detail(request, pk):
     data["authors"] = idea.authors.all()
     data["creation_date"] = idea.creation_date.strftime("%d/%m/%Y")
     data["timeline"] = sort_timeline(list(timeline_phase_history), timeline_evaluation)
-    data['phases'] = get_phases_count()
+    data["idea_phase"] = get_phases_count()
 
     initial = collections.OrderedDict()
     form_ = None
@@ -636,7 +620,7 @@ def post_comment(request):
                       parent=parent_object,
                       idea=idea,
                       date=timezone.now(),
-                      comment_phase=idea.get_current_phase().id,
+                      comment_phase=idea.get_current_phase()['current_phase_id'],
                       ip=get_ip(request))
 
     comment.save()
