@@ -6,7 +6,7 @@ from django.core.exceptions import DisallowedHost
 from django.db import connection
 from django.http import Http404
 
-from .utils import set_connection
+from ideax.tenant.utils import set_connection
 
 from tenant_schemas.utils import (get_tenant_model, remove_www,
                                   get_public_schema_name)

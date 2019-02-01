@@ -127,4 +127,4 @@ def get_term_of_user(request):
 
 
 def term_of_user_exist():
-    return Use_Term.objects.filter(final_date__lte=timezone.now()).exists()
+    return Use_Term.objects.filter(final_date__gte=timezone.now()).exists()

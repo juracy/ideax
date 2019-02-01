@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-23 14:29-0200\n"
+"POT-Creation-Date: 2019-01-29 14:26-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,12 +19,12 @@ msgstr ""
 "X-Generator: Poedit 2.0.7\n"
 
 #: ideax/administration/templates/administration/index.html:15
-#: ideax/users/templates/users/profile.html:7
+#: ideax/users/templates/users/profile.html:58
 msgid "Back to top"
 msgstr ""
 
 #: ideax/administration/templates/administration/index.html:27
-#: ideax/ideax/templates/ideax/base.html:106
+#: ideax/ideax/templates/ideax/base.html:107
 msgid "New Idea"
 msgstr "Criar Ideia"
 
@@ -76,6 +76,11 @@ msgstr "Nova Dimensão"
 
 #: ideax/administration/templates/administration/index.html:119
 msgid "Report"
+msgstr ""
+
+#: ideax/administration/templates/administration/index.html:124
+#: ideax/administration/templates/administration/index.html:131
+msgid "Set auth configuration"
 msgstr ""
 
 #: ideax/ideax/feeds.py:9 ideax/ideax/templates/ideax/idea_detail.html:89
@@ -208,42 +213,42 @@ msgstr "Data Inicial"
 msgid "Final Date"
 msgstr "Data Final"
 
-#: ideax/ideax/models.py:12
+#: ideax/ideax/models.py:13
 #: ideax/ideax/templates/ideax/includes/idea_detail.html:61
 msgid "Discussion"
 msgstr "Discussão"
 
-#: ideax/ideax/models.py:13 ideax/ideax/templates/ideax/idea_detail.html:92
+#: ideax/ideax/models.py:14 ideax/ideax/templates/ideax/idea_detail.html:92
 #: ideax/ideax/templates/ideax/includes/idea_detail.html:62
 msgid "Evaluation"
 msgstr "Avaliação"
 
-#: ideax/ideax/models.py:14
+#: ideax/ideax/models.py:15
 #: ideax/ideax/templates/ideax/includes/idea_detail.html:63
 msgid "Ideation"
 msgstr "Ideação"
 
-#: ideax/ideax/models.py:15
+#: ideax/ideax/models.py:16
 #: ideax/ideax/templates/ideax/includes/idea_detail.html:64
 msgid "Approval"
 msgstr "Aprovação"
 
-#: ideax/ideax/models.py:16
+#: ideax/ideax/models.py:17
 #: ideax/ideax/templates/ideax/includes/idea_detail.html:65
 msgid "Evolution"
 msgstr "Evolução"
 
-#: ideax/ideax/models.py:17
+#: ideax/ideax/models.py:18
 #: ideax/ideax/templates/ideax/includes/idea_detail.html:66
 msgid "Done"
 msgstr "Concluídas"
 
-#: ideax/ideax/models.py:18
+#: ideax/ideax/models.py:19
 #: ideax/ideax/templates/ideax/includes/idea_detail.html:67
 msgid "Archived"
 msgstr "Arquivadas"
 
-#: ideax/ideax/models.py:19
+#: ideax/ideax/models.py:20
 #: ideax/ideax/templates/ideax/includes/idea_detail.html:68
 msgid "Paused"
 msgstr "Pausadas"
@@ -264,70 +269,87 @@ msgstr ""
 #: ideax/ideax/templates/ideax/dimension_edit.html:60
 #: ideax/ideax/templates/ideax/dimension_new.html:61
 #: ideax/ideax/templates/ideax/idea_edit.html:17
-#: ideax/ideax/templates/ideax/idea_new.html:17
+#: ideax/ideax/templates/ideax/idea_new.html:26
 #: ideax/ideax/templates/ideax/use_term_detail.html:31
 #: ideax/ideax/templates/ideax/use_term_edit.html:56
 #: ideax/ideax/templates/ideax/use_term_new.html:48
 #: ideax/ideax/templates/ideax/user_profile.html:9
+#: ideax/users/templates/configuration/configuration_edit.html:77
 msgid "Return"
 msgstr "Voltar"
 
 #: ideax/ideax/templates/ideax/base.html:68
+#: ideax/users/templates/users/profile.html:21
 #, python-format
 msgid "Hi, %(name)s!"
 msgstr "Olá, %(name)s!"
 
 #: ideax/ideax/templates/ideax/base.html:76
+#: ideax/users/templates/users/profile.html:29
 msgid "Profile"
 msgstr "Perfil"
 
-#: ideax/ideax/templates/ideax/base.html:78
+#: ideax/ideax/templates/ideax/base.html:77
+#: ideax/users/templates/users/profile.html:30
+#: ideax/users/templates/users/who_innovates.html:6
+msgid "Who Innovates"
+msgstr ""
+
+#: ideax/ideax/templates/ideax/base.html:79
 #: ideax/ideax/templates/ideax/idea_list.html:6
+#: ideax/users/templates/users/profile.html:32
 msgid "Explore Ideas"
 msgstr "Explorar Ideias"
 
-#: ideax/ideax/templates/ideax/base.html:79
+#: ideax/ideax/templates/ideax/base.html:80
+#: ideax/users/templates/users/profile.html:33
 msgid "Challenges"
 msgstr "Desafios"
 
-#: ideax/ideax/templates/ideax/base.html:80
+#: ideax/ideax/templates/ideax/base.html:81
+#: ideax/users/templates/users/profile.html:34
 msgid "Active Terms of Use and Privacy"
 msgstr "Termo de uso ativo"
 
-#: ideax/ideax/templates/ideax/base.html:81
+#: ideax/ideax/templates/ideax/base.html:82
+#: ideax/users/templates/users/profile.html:35
 msgid "Users"
 msgstr "Usuários"
 
-#: ideax/ideax/templates/ideax/base.html:83
+#: ideax/ideax/templates/ideax/base.html:84
+#: ideax/users/templates/users/profile.html:37
 #, fuzzy
 #| msgid "Integration"
 msgid "Administration"
 msgstr "Integração"
 
-#: ideax/ideax/templates/ideax/base.html:85
+#: ideax/ideax/templates/ideax/base.html:86
+#: ideax/users/templates/users/profile.html:39
 msgid "Logout"
 msgstr "Sair"
 
-#: ideax/ideax/templates/ideax/base.html:93
+#: ideax/ideax/templates/ideax/base.html:94
 #: ideax/ideax/templates/ideax/includes/chatbot.html:5
+#: ideax/users/templates/users/profile.html:47
 msgid "Help"
 msgstr "Ajuda"
 
-#: ideax/ideax/templates/ideax/base.html:96
-#: ideax/ideax/templates/ideax/index.html:15
+#: ideax/ideax/templates/ideax/base.html:97
+#: ideax/ideax/templates/ideax/index.html:12
+#: ideax/users/templates/users/profile.html:50
 msgid "Login"
 msgstr "Entrar"
 
-#: ideax/ideax/templates/ideax/base.html:121
-#: ideax/ideax/templates/ideax/base.html:125
+#: ideax/ideax/templates/ideax/base.html:122
+#: ideax/ideax/templates/ideax/base.html:126
 msgid "Terms of use"
 msgstr "Termo de uso"
 
-#: ideax/ideax/templates/ideax/base.html:128
+#: ideax/ideax/templates/ideax/base.html:129
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: ideax/ideax/templates/ideax/base.html:129
+#: ideax/ideax/templates/ideax/base.html:130
 msgid "Accept"
 msgstr "Aceitar"
 
@@ -341,6 +363,7 @@ msgstr "Atualizar Categoria"
 #: ideax/ideax/templates/ideax/idea_edit.html:18
 #: ideax/ideax/templates/ideax/includes/partial_idea_update.html:22
 #: ideax/ideax/templates/ideax/use_term_edit.html:57
+#: ideax/users/templates/configuration/configuration_edit.html:78
 msgid "Update"
 msgstr "Atualizar"
 
@@ -355,11 +378,12 @@ msgstr "EDitar Imagem de Categoria"
 #: ideax/ideax/templates/ideax/challenge_new.html:17
 #: ideax/ideax/templates/ideax/criterion_new.html:38
 #: ideax/ideax/templates/ideax/dimension_new.html:62
-#: ideax/ideax/templates/ideax/idea_new.html:18
+#: ideax/ideax/templates/ideax/idea_new.html:27
 #: ideax/ideax/templates/ideax/includes/evaluation.html:34
 #: ideax/ideax/templates/ideax/includes/partial_idea_create.html:25
 #: ideax/ideax/templates/ideax/phase_edit.html:12
 #: ideax/ideax/templates/ideax/use_term_new.html:49
+#: ideax/users/templates/configuration/configuration_new.html:77
 msgid "Save"
 msgstr "Salvar"
 
@@ -564,34 +588,37 @@ msgid "Clean"
 msgstr "Limpar"
 
 #: ideax/ideax/templates/ideax/idea_list.html:127
-#: ideax/users/templates/users/profile.html:101
+#: ideax/users/templates/users/profile.html:152
+#: ideax/users/templates/users/who_innovates.html:14
 msgid "Sorted by"
 msgstr "Ordenado por"
 
 #: ideax/ideax/templates/ideax/idea_list.html:127
 #: ideax/ideax/templates/ideax/idea_list.html:130
-#: ideax/users/templates/users/profile.html:101
-#: ideax/users/templates/users/profile.html:104
+#: ideax/users/templates/users/profile.html:152
+#: ideax/users/templates/users/profile.html:155
+#: ideax/users/templates/users/who_innovates.html:18
 msgid "Highest positive votes"
 msgstr "Mais votos positivos"
 
 #: ideax/ideax/templates/ideax/idea_list.html:131
-#: ideax/users/templates/users/profile.html:105
+#: ideax/users/templates/users/profile.html:156
+#: ideax/users/templates/users/who_innovates.html:19
 msgid "Highest negative votes"
 msgstr "Mais votos negativos"
 
 #: ideax/ideax/templates/ideax/idea_list.html:132
-#: ideax/users/templates/users/profile.html:106
+#: ideax/users/templates/users/profile.html:157
 msgid "Most discussed"
 msgstr "Mais comentados"
 
 #: ideax/ideax/templates/ideax/idea_list.html:133
-#: ideax/users/templates/users/profile.html:107
+#: ideax/users/templates/users/profile.html:158
 msgid "Alphabetical"
 msgstr "Ordem alfabética"
 
 #: ideax/ideax/templates/ideax/idea_list.html:134
-#: ideax/users/templates/users/profile.html:108
+#: ideax/users/templates/users/profile.html:159
 msgid "Latest"
 msgstr "Mais recentes"
 
@@ -704,11 +731,11 @@ msgstr "criou a ideia"
 msgid "changed the idea phase to"
 msgstr "alterou a fase da ideia para"
 
-#: ideax/ideax/templates/ideax/index.html:12
+#: ideax/ideax/templates/ideax/index.html:9
 msgid "Sharing ideas!"
 msgstr "Compartilhando ideias!"
 
-#: ideax/ideax/templates/ideax/index.html:13
+#: ideax/ideax/templates/ideax/index.html:10
 msgid ""
 "An open channel for innovation, getting ideas from all parties, evaluating "
 "and making them happen!"
@@ -716,16 +743,16 @@ msgstr ""
 "Um canal aberto para a inovação, que recebe ideias de todas as partes, "
 "avaliando-as e fazendo-as acontecer!"
 
-#: ideax/ideax/templates/ideax/index.html:16
+#: ideax/ideax/templates/ideax/index.html:13
 #: ideax/users/templates/users/sign_up.html:10
 msgid "Sign Up"
 msgstr "Inscreva-se"
 
-#: ideax/ideax/templates/ideax/index.html:21
+#: ideax/ideax/templates/ideax/index.html:18
 msgid "Launch your ideas for everyone!"
 msgstr "Lance suas ideias para todos!"
 
-#: ideax/ideax/templates/ideax/index.html:22
+#: ideax/ideax/templates/ideax/index.html:19
 msgid ""
 "Ideia<sup>X</sup> is the channel to spread and share your ideas, allowing "
 "your peers to contribute, discuss and collaborate to grow it."
@@ -734,7 +761,7 @@ msgstr ""
 "permitindo que seus pares possam contribuir, discutir e colaborar para o "
 "crescimento dela."
 
-#: ideax/ideax/templates/ideax/index.html:23
+#: ideax/ideax/templates/ideax/index.html:20
 msgid ""
 "In the same way, you can see other posted ideas, interacting with your "
 "opinion and asking to further improve them!"
@@ -742,22 +769,22 @@ msgstr ""
 "Da mesma forma, você pode ver as outras ideias postadas, interagindo com sua "
 "opinião e perguntas para melhorá-las ainda mais!"
 
-#: ideax/ideax/templates/ideax/index.html:34
+#: ideax/ideax/templates/ideax/index.html:31
 msgid "Register Ideas"
 msgstr "Cadastro de ideias"
 
-#: ideax/ideax/templates/ideax/index.html:35
+#: ideax/ideax/templates/ideax/index.html:32
 msgid ""
 "All company employees can collaborate. Innovation can come from everyone."
 msgstr ""
 "Todos os funcionários da empresa podem colaborar. A inovação poderá vir de "
 "todos."
 
-#: ideax/ideax/templates/ideax/index.html:38
+#: ideax/ideax/templates/ideax/index.html:35
 msgid "Manage Ideas"
 msgstr "Gestão de ideias"
 
-#: ideax/ideax/templates/ideax/index.html:39
+#: ideax/ideax/templates/ideax/index.html:36
 msgid ""
 "Ideas will be organized, refined and evaluated, allowing a flow for the "
 "innovation management."
@@ -765,11 +792,11 @@ msgstr ""
 "As ideias serão organizadas, refinadas e avaliadas, permitindo um fluxo para "
 "a gestão da inovação."
 
-#: ideax/ideax/templates/ideax/index.html:42
+#: ideax/ideax/templates/ideax/index.html:39
 msgid "Integration"
 msgstr "Integração"
 
-#: ideax/ideax/templates/ideax/index.html:43
+#: ideax/ideax/templates/ideax/index.html:40
 msgid ""
 "Through APIs is possible to integrate the Idea<sup>X</sup> with other tools."
 msgstr ""
@@ -820,100 +847,106 @@ msgid "Your username and password didn't match. Please try again."
 msgstr ""
 "Seu nome de usuário e senha não correspondem. Por favor, tente novamente."
 
-#: ideax/ideax/templates/registration/login.html:21
+#: ideax/ideax/templates/registration/login.html:20
 msgid "You must be logged in to access ideas."
 msgstr "É necessário fazer o login para ter acesso às ideias."
 
-#: ideax/ideax/templates/registration/login.html:22
+#: ideax/ideax/templates/registration/login.html:21
 msgid "Username"
 msgstr "Nome de Usuário"
 
-#: ideax/ideax/templates/registration/login.html:23
-msgid "placeholder:username"
+#: ideax/ideax/templates/registration/login.html:22
+#, fuzzy
+#| msgid "placeholder:username"
+msgid "placeholder:email"
 msgstr "placeholder:nome.sobrenome"
 
-#: ideax/ideax/templates/registration/login.html:24
+#: ideax/ideax/templates/registration/login.html:23
 msgid "Password"
 msgstr "Senha"
 
-#: ideax/ideax/templates/registration/login.html:25
+#: ideax/ideax/templates/registration/login.html:24
 msgid "placeholder:password"
 msgstr "placeholder:senha"
 
-#: ideax/ideax/templates/registration/login.html:26
+#: ideax/ideax/templates/registration/login.html:25
 msgid "Sign in"
 msgstr "Acessar"
 
-#: ideax/ideax/views/__init__.py:186
+#: ideax/ideax/views/__init__.py:176
+msgid "Invalid reCAPTCHA. Please try again."
+msgstr ""
+
+#: ideax/ideax/views/__init__.py:207
 msgid "Idea saved successfully!"
 msgstr "Ideia salva com sucesso!"
 
-#: ideax/ideax/views/__init__.py:226 ideax/ideax/views/__init__.py:254
-#: ideax/ideax/views/__init__.py:669
+#: ideax/ideax/views/__init__.py:247 ideax/ideax/views/__init__.py:275
+#: ideax/ideax/views/__init__.py:690
 msgid "Not supported action"
 msgstr "Ação não suportada"
 
-#: ideax/ideax/views/__init__.py:266
+#: ideax/ideax/views/__init__.py:287
 msgid "Criterion saved successfully!"
 msgstr "Critério salvo com sucesso!"
 
-#: ideax/ideax/views/__init__.py:300
+#: ideax/ideax/views/__init__.py:321
 msgid "Criterion changed successfully!"
 msgstr "Critério alterado com sucesso!"
 
-#: ideax/ideax/views/__init__.py:374
+#: ideax/ideax/views/__init__.py:395
 msgid "Something went wrong or you're not allowed!"
 msgstr "Aconteceu algum problema ou seu acesso não é permitido!"
 
-#: ideax/ideax/views/__init__.py:379
+#: ideax/ideax/views/__init__.py:400
 msgid "Evaluation done successfully!"
 msgstr "Avaliação feita com sucesso!"
 
-#: ideax/ideax/views/__init__.py:388
+#: ideax/ideax/views/__init__.py:409
 msgid "Criterion removed successfully!"
 msgstr "Critério removido com sucesso!"
 
-#: ideax/ideax/views/__init__.py:473
+#: ideax/ideax/views/__init__.py:494
 msgid "Phase change successfully!"
 msgstr "Fase alterada com sucesso!"
 
-#: ideax/ideax/views/__init__.py:479
+#: ideax/ideax/views/__init__.py:500
 msgid "Phase change"
 msgstr "Fase alterad "
 
-#: ideax/ideax/views/__init__.py:542
+#: ideax/ideax/views/__init__.py:563
 msgid "You need to log in to post new comments."
 msgstr "É necessário estar logado para postar comentários."
 
-#: ideax/ideax/views/__init__.py:550
+#: ideax/ideax/views/__init__.py:571
 msgid "Please check your message it has inappropriate content."
 msgstr "Verifique sua mensagem, ela tem conteúdo inapropriado."
 
-#: ideax/ideax/views/__init__.py:553
+#: ideax/ideax/views/__init__.py:574
 msgid "You have to write a comment."
 msgstr "É necessário escrever um comentário."
 
-#: ideax/ideax/views/__init__.py:572
+#: ideax/ideax/views/__init__.py:593
 msgid "Your comment has been posted."
 msgstr "Comentário postado com sucesso."
 
-#: ideax/ideax/views/__init__.py:627 ideax/ideax/views/__init__.py:643
+#: ideax/ideax/views/__init__.py:648 ideax/ideax/views/__init__.py:664
 msgid "Challenge saved successfully!"
 msgstr "Desafio salvo com sucesso!"
 
-#: ideax/ideax/views/__init__.py:667
+#: ideax/ideax/views/__init__.py:688
 msgid "Challenge removed successfully!"
 msgstr "Desafio removido com sucesso!"
 
-#: ideax/ideax/views/__init__.py:803
+#: ideax/ideax/views/__init__.py:824
 msgid "Bad image format."
 msgstr "Formato de imagem não recomendado"
 
-#: ideax/ideax/views/__init__.py:812
+#: ideax/ideax/views/__init__.py:833
 msgid "Maximum image file is %(size) MB."
 msgstr "O tamanho máximo do arquivo é %(size) MB."
 
-#: ideax/ideax/views/__init__.py:828 ideax/ideax/views/__init__.py:829
+#: ideax/ideax/views/__init__.py:849 ideax/ideax/views/__init__.py:850
 msgid "Invalid request!"
 msgstr "Requisição Inválida"
 
@@ -981,19 +1014,80 @@ msgstr "Termo de Uso removido com sucesso!"
 msgid "No Term of Use found"
 msgstr "Termo de Uso não encontrado"
 
-#: ideax/users/forms.py:9
+#: ideax/users/forms.py:11
 msgid "First name"
 msgstr "Primeiro nome"
 
-#: ideax/users/forms.py:14
+#: ideax/users/forms.py:16
 msgid "Last name"
 msgstr "Sobrenome"
 
-#: ideax/users/forms.py:20
+#: ideax/users/forms.py:22
 msgid "Required. Inform a valid e-mail address."
 msgstr "Requerido. Informe um e-mail válido."
 
-#: ideax/users/templates/users/profile.html:22
+#: ideax/users/models.py:21
+msgid "LDAP"
+msgstr ""
+
+#: ideax/users/templates/configuration/configuration_edit.html:10
+#, fuzzy
+#| msgid "Update Criterion"
+msgid "Update Auth Configuration"
+msgstr "Atualizar Critério"
+
+#: ideax/users/templates/configuration/configuration_edit.html:22
+#: ideax/users/templates/configuration/configuration_new.html:22
+msgid ""
+"Be careful the configuration of password is save in plaintext. It is high "
+"recommend the user just have search permission."
+msgstr ""
+
+#: ideax/users/templates/configuration/configuration_edit.html:37
+#: ideax/users/templates/configuration/configuration_new.html:37
+msgid "Here is necessary put protocol like: ldap:// ou ldaps://"
+msgstr ""
+
+#: ideax/users/templates/configuration/configuration_edit.html:38
+#: ideax/users/templates/configuration/configuration_new.html:38
+#, fuzzy
+#| msgid "placeholder:username"
+msgid "placeholder:host"
+msgstr "placeholder:nome.sobrenome"
+
+#: ideax/users/templates/configuration/configuration_edit.html:46
+#: ideax/users/templates/configuration/configuration_new.html:46
+#, fuzzy
+#| msgid "placeholder:username"
+msgid "placeholder:bind_dn"
+msgstr "placeholder:nome.sobrenome"
+
+#: ideax/users/templates/configuration/configuration_edit.html:54
+#: ideax/users/templates/configuration/configuration_new.html:54
+#, fuzzy
+#| msgid "placeholder:password"
+msgid "placeholder:bind_password"
+msgstr "placeholder:senha"
+
+#: ideax/users/templates/configuration/configuration_edit.html:62
+#: ideax/users/templates/configuration/configuration_new.html:62
+#, fuzzy
+#| msgid "placeholder:username"
+msgid "placeholder:user_search_base"
+msgstr "placeholder:nome.sobrenome"
+
+#: ideax/users/templates/configuration/configuration_edit.html:70
+#: ideax/users/templates/configuration/configuration_new.html:70
+#, fuzzy
+#| msgid "placeholder:username"
+msgid "placeholder:user_filter"
+msgstr "placeholder:nome.sobrenome"
+
+#: ideax/users/templates/configuration/configuration_new.html:10
+msgid "Auth Configuration"
+msgstr ""
+
+#: ideax/users/templates/users/profile.html:73
 #, python-format
 msgid "Author of one idea"
 msgid_plural "Author of %(size)s ideas"
@@ -1004,9 +1098,32 @@ msgstr[1] "Autor de %(size)s ideias"
 msgid "Sign up"
 msgstr "Inscreva-se"
 
-#: ideax/users/views.py:37
+#: ideax/users/templates/users/who_innovates.html:14
+#: ideax/users/templates/users/who_innovates.html:17
+#, fuzzy
+#| msgid "Creator"
+msgid "Collaborators"
+msgstr "Autor"
+
+#: ideax/users/views.py:68
 msgid "Invalid form!"
 msgstr "Formulário inválido"
+
+#: ideax/users/views.py:91
+msgid "Tenant not found"
+msgstr ""
+
+#: ideax/users/views.py:94
+#, fuzzy
+#| msgid "Invalid Final Date"
+msgid "Invalid tenant model"
+msgstr "Data Final Inválida"
+
+#: ideax/users/views.py:131 ideax/users/views.py:168
+#, fuzzy
+#| msgid "Criterion saved successfully!"
+msgid "Configuration saved successfully!"
+msgstr "Critério salvo com sucesso!"
 
 #~ msgid "Highest comments"
 #~ msgstr "Mais comentados"

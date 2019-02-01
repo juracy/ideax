@@ -41,5 +41,4 @@ class AuthConfiguration(models.Model):
     active = models.BooleanField(default=True)
     configuration_date = models.DateTimeField(null=True)
     configuration_admin_ip = models.CharField(max_length=20, null=True)
-    configuration_admin = models.CharField(max_length=20, null=True)
-
+    configuration_admin = models.CharField(max_length=40, null=True)

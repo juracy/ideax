@@ -7,7 +7,7 @@
 {% block content %}
 
 <div class="idea-list-bg">
-    <h1 class="display-3">{% trans 'Auth Configuration' %}</h1>
+    <h1 class="display-3">{% trans 'Update Auth Configuration' %}</h1>
 </div>
 <div class="container">
   {% for message in messages %}
@@ -23,7 +23,7 @@
     </div>
   </div>
 
-  <form method="post" class="form post-form" action="{% url 'users:set-configuration' %}">
+  <form method="post" class="form post-form" action="{% url 'users:edit-configuration' %}">
     {% csrf_token %}
     <div class="form-group{% if form.auth_type.errors %} has-error{% endif %}">
       <label for="{{form.auth_type.id_for_label}}">{{form.auth_type.label}}</label>
@@ -74,7 +74,8 @@
     </div>   
 
     <div class="button-group">
-      <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+      <a href="{% url 'category_list' %}">{% trans 'Return' %}</a>
+      <button type="submit" class="btn btn-primary">{% trans 'Update' %}</button>
     </div>
   </form>
 </div>

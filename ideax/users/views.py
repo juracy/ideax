@@ -1,20 +1,21 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, views as auth_views
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import CreateView
 from django.db.models import Count, Case, When
-from django.db import connection
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from tenant_schemas.utils import get_tenant_model
+from ideax.util import get_ip, get_client_ip, audit
 from .forms import SignUpForm, AuthConfigurationForm
-from .utils import set_connection
+from ideax.tenant.utils import set_connection
 from ..ideax.models import Popular_Vote, Comment, Idea
 from .models import UserProfile, AuthConfiguration
-
+from .utils import get_auth_configuration, disable_auth_configuration
 
 
 @login_required
@@ -52,9 +53,9 @@ def profile(request, pk):
 def who_innovates(request):
     data = dict()
     data['ideas'] = Idea.objects.values("author__user__username", "author__user__email", "author_id").annotate(
-        qtd=Count('author_id')).annotate(
-        count_dislike=Count(Case(When(popular_vote__like=False, then=1)))).annotate(
-        count_like=Count(Case(When(popular_vote__like=True, then=1))))
+       qtd=Count('author_id')).annotate(
+       count_dislike=Count(Case(When(popular_vote__like=False, then=1)))).annotate(
+       count_like=Count(Case(When(popular_vote__like=True, then=1))))
 
     return render(request, 'users/who_innovates.html', data)
 
@@ -98,22 +99,18 @@ def login(request):
     return auth_views.login(request)
 
 
-def check_authconfiguration(request):
-    if request.user.is_superuser:
-        if AuthConfiguration.objects.filter(active=True):
-            pass
-        else:
-            return redirect('users:set-configuration')
-        
-            
 @login_required
+@permission_required('users.add_authconfiguration', raise_exception=True)
 def set_authconfiguration(request, new=False):
     if request.method == "POST":
         form = AuthConfigurationForm(request.POST)
     else:
         form = AuthConfigurationForm()
 
-    # AUDIT
+    audit(request.user.username,
+          get_client_ip(request),
+          'SET_AUTH_CONFIGURATION',
+          AuthConfiguration.__name__, '')
     return save_authconfiguration(request, form, 'configuration/configuration_new.html', True)
 
 
@@ -122,7 +119,11 @@ def save_authconfiguration(request, form, template_name, new=False):
         if form.is_valid():
             auth_configuration = form.save(commit=False)
             auth_configuration.active = True
+            auth_configuration.configuration_date = timezone.localtime(timezone.now())
+            auth_configuration.configuration_admin_ip = get_ip(request)
+            auth_configuration.configuration_admin = request.user.username
             auth_configuration.save()
+            disable_auth_configuration(auth_configuration.id)
             messages.success(request, _('Configuration saved successfully!'))
 
             if new:
@@ -130,3 +131,41 @@ def save_authconfiguration(request, form, template_name, new=False):
             return redirect('idea_list')
 
     return render(request, template_name, {'form': form})
+
+
+@login_required
+@permission_required('users.change_authconfiguration', raise_exception=True)
+def auth_configuration_edit(request):
+    auth_configuration = get_auth_configuration()
+    if request.method == "POST":
+        form = AuthConfigurationForm(request.POST, instance=auth_configuration)
+        if form.is_valid():
+            auth_configuration_edited = AuthConfiguration()
+            auth_configuration_edited.auth_type = form.cleaned_data['auth_type']
+            auth_configuration_edited.host = form.cleaned_data['host']
+            auth_configuration_edited.bind_dn = form.cleaned_data['bind_dn']
+            auth_configuration_edited.bind_password = form.cleaned_data['bind_password']
+            auth_configuration_edited.user_search_base = form.cleaned_data['user_search_base']
+            auth_configuration_edited.user_filter = form.cleaned_data['user_filter']
+            auth_configuration_edited.active = True
+            auth_configuration_edited.configuration_date = timezone.localtime(timezone.now())
+            auth_configuration_edited.configuration_admin_ip = get_ip(request)
+            auth_configuration_edited.configuration_admin = request.user.username
+            auth_configuration_edited.save()
+            disable_auth_configuration(auth_configuration_edited.id)
+            messages.success(request, _('Configuration saved successfully!'))
+
+            return redirect('idea_list')
+
+    else:
+        form = AuthConfigurationForm(instance=auth_configuration)
+
+    audit(
+        request.user.username,
+        get_client_ip(request),
+        'EDIT_AUTH_CONFIGURATION',
+        AuthConfiguration.__name__,
+        ''
+    )
+
+    return save_authconfiguration(request, form, 'configuration/configuration_edit.html', False)

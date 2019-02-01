@@ -1,20 +1,24 @@
-from django.http.response import Http404
-from django.db import connection
-
-from tenant_schemas.utils import get_tenant_model
-
-
-def get_tenant(model, hostname):
-    return model.objects.get(domain_url=hostname)
+from django.contrib.auth import get_user_model
+from django.shortcuts import redirect
+from .models import AuthConfiguration
 
 
-def set_connection(request, hostname):
-    connection.set_schema_to_public()
+def check_authconfiguration(request):
+    if request.user.is_superuser:
+        if AuthConfiguration.objects.filter(active=True):
+            pass
+        else:
+            return redirect('users:set-configuration')
 
-    TenantModel = get_tenant_model()
 
-    tenant = get_tenant(TenantModel, hostname)
-    assert isinstance(tenant, TenantModel)
+def get_auth_configuration():
+    return AuthConfiguration.objects.get(active=True)
 
-    request.tenant = tenant
-    connection.set_tenant(request.tenant)
+
+def disable_auth_configuration(excluded_id):
+    AuthConfiguration.objects.exclude(id=excluded_id).update(active=False)
+
+
+def create_super_user(username, email, password):
+    User = get_user_model()
+    User.objects.create_superuser(username, email, password)

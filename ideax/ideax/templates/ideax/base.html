@@ -142,7 +142,7 @@
         <!--script bootstrap-->
         <script src="{% static '/js/bootstrap.min.js' %}"></script>
       {% endblock %}
-      {% if user.is_authenticated and not user.userprofile.use_term_accept%}
+      {% if user.is_authenticated and not user.userprofile.use_term_accept and not user.is_staff%}
       <script>
             $("#modal-term").modal("show");
             getUserTerm("#modal-term-text", $("#modal-term").attr("data-url"));

@@ -18,6 +18,7 @@ urlpatterns = [
     url('^administration', include(('ideax.administration.urls', 'administration'), namespace='administration')),
     # url('', include(('ideax.ideax.urls', 'ideax'), namespace='ideax')),
     url('', include(('ideax.users.urls', 'users'), namespace='users')),
+    url('', include(('ideax.tenant.urls', 'tenant'), namespace='tenant')),
 ]
 
 urlpatterns += ideax_urls

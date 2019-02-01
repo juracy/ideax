@@ -26,7 +26,8 @@ from ideax.settings.django._core import GOOGLE_RECAPTCHA_SECRET_KEY, GOOGLE_RECA
 from martor.utils import LazyEncoder
 
 from ...users.models import UserProfile, AuthConfiguration
-from ...users.views import check_authconfiguration, set_authconfiguration
+from ...users.utils import check_authconfiguration
+from ...users.views import set_authconfiguration
 from ..models import (
     Idea, Criterion, Popular_Vote, Phase, Phase_History,
     Comment, Evaluation, Category_Image, Challenge, Dimension,
@@ -36,7 +37,12 @@ from ...singleton import ProfanityCheck
 from ...mail_util import MailUtil
 from ...util import get_ip, get_client_ip, audit
 
-from .category import category_edit, category_list, category_new, category_remove
+from .category import (
+    category_edit,
+    category_list,
+    category_new,
+    category_remove
+)
 from .category_image import category_image_edit, category_image_list, category_image_new, category_image_remove
 from .use_term import (
     get_term_of_user, accept_use_term, get_valid_use_term, save_use_term,
@@ -50,10 +56,11 @@ mail_util = MailUtil()
 
 def index(request):
     if request.user.is_authenticated:
-        if request.user.is_superuser and AuthConfiguration.objects.filter(active=True) and term_of_user_exist():
-            pass
-        else:
-            return set_authconfiguration(request, True)
+        if request.user.is_superuser:
+            if AuthConfiguration.objects.filter(active=True) and term_of_user_exist():
+                pass
+            else:
+                return set_authconfiguration(request, True)
         audit(request.user.username, get_client_ip(request), 'LIST_IDEAS_PAGE', Idea.__name__, '')
         return idea_list(request)
     return render(request, 'ideax/index.html')
