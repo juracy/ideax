@@ -45,9 +45,7 @@
                 </div>
                 <div class="timeline-body">
                     <p>{{timeline_idea.author}} {% trans 'changed the idea phase to' %}
-                        {% for key, value in phases.items %}
-                        {% if key == timeline_idea.current_phase %}<span class='highlight'>{{ value.phase }}</span>{%endif%}
-                        {% endfor %}</p>
+                    <span class='highlight'>{{timeline_idea.current_phase}}</span>
                 </div>
             </div>
         </li>
