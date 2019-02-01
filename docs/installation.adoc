@@ -2,7 +2,7 @@
 
 === Introduction
 
-TIP: Idea^X^ is a Django application, so you can download it and install in a WSGI server or use a Docker image.
+Idea^X^ is a Django application, so you can download it and install in a WSGI server or use a Docker image.
 
 === Installation
 
