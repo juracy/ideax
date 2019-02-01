@@ -26,6 +26,7 @@ class Phase_History(models.Model):  # noqa
     current = models.BooleanField()
 
 
+
 class Criterion(models.Model):
     description = models.CharField(max_length=40)
     peso = models.IntegerField()

@@ -58,6 +58,19 @@ def idea_list(request):
     ideas = get_ideas_init(request)
     ideas['idea_phase'] = get_phases_count()
 
+    ideas['idea_phase'] = IdeaPhase.objects.all()
+    #qtdade de ideias na fase em cada fase que não esteja descartada,
+
+    #IdeaPhase.objects.filter(idea__discarded=False)#.annotate(qtd=Count(phase_history__idea_id))
+
+#    print(ideas['idea_phase'].query)
+
+    # ideas = Idea.objects.filter(
+    #     discarded=False,
+    #     phase_history__current_phase=phase_pk,
+    #     phase_history__current=1).annotate(
+    #         count_like=Count(Case(When(popular_vote__like=True, then=1)))).order_by('-count_like')
+
     page = request.GET.get('page', 1)
     paginator = Paginator(ideas['ideas'], 5)
 
