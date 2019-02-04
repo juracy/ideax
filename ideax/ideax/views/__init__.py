@@ -515,6 +515,7 @@ def change_idea_phase(request, pk, new_phase):
         messages.success(request, _('Phase change successfully!'))
         context = {}
         context['idea'] = idea
+        context['phase'] = phase.name
         try:
             mail_util.send_mail(
                 mail_util.generate_messages(
