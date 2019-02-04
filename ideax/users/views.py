@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _ # noqa
 from django.views.generic import CreateView
-from django.db.models import Count, Case, When
+from django.db.models import Count, Case, When, Q
 
 from .forms import SignUpForm
 from ..ideax.models import Popular_Vote, Comment, Idea
@@ -50,7 +50,7 @@ def profile(request, username):
 def who_innovates(request):
     data = dict()
     data['ideas'] = Idea.objects.values("author__user__username", "author__user__email", "author_id").annotate(
-        qtd=Count('author_id')).annotate(
+        qtd=Count('author_id', filter=Q(discarded=False))).annotate(
         count_dislike=Count(Case(When(popular_vote__like=False, then=1)))).annotate(
         count_like=Count(Case(When(popular_vote__like=True, then=1))))
 

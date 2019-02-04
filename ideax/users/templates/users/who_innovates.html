@@ -30,7 +30,7 @@
                                     <a href="{% url 'users:profile' username=idea.author__user__username %}" class="avatar" style="padding-top: 10px;">
                                         {% gravatar idea.author__user__email 128 %}
                                     </a>
-                                    <h2>{{idea.author__user__username}}</h2>
+                                    <h2>{{idea.author__user__username|truncatechars:15}}</h2>
                                     <div class="description">
                                         <ul class="staff-icon">
                                             <li><a style="font-size: 25px;" href="#" class="qtdIdeas">{{idea.qtd}}<i class="far fa-lightbulb"></i></a></li>
