@@ -68,8 +68,6 @@ def mark_notifications_as_read(request):
 def idea_list(request):
     ideas = get_ideas_init(request)
     ideas['idea_phase'] = get_phases_count()
-
-    ideas['idea_phase'] = IdeaPhase.objects.all()
     page = request.GET.get('page', 1)
     paginator = Paginator(ideas['ideas'], 5)
 
@@ -556,6 +554,7 @@ def idea_detail(request, pk):
     data["creation_date"] = idea.creation_date.strftime("%d/%m/%Y")
     data["timeline"] = sort_timeline(list(timeline_phase_history), timeline_evaluation)
     data["idea_phase"] = get_phases_count()
+    data["current_phase"] = Phase_History.objects.get(idea=idea, current=True)
 
     initial = collections.OrderedDict()
     form_ = None
