@@ -29,6 +29,7 @@ class TestMail:
             context,
             ['test@gmail.com', 'ideax@gmail.com'],
         )
+
     @mark.skip
     def test_generate_messages(self, base_params, context, mocker):
         base_parts = (
