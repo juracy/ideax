@@ -15,7 +15,6 @@ class TestCategoryForm:
         form = CategoryForm(data)
         assert form.is_valid()
 
-    @mark.skip
     def test_invalid(self, snapshot):
         data = {}
         form = CategoryForm(data)
@@ -23,7 +22,6 @@ class TestCategoryForm:
         assert len(form.errors) == 2
         snapshot.assert_match(form.errors)
 
-    @mark.skip
     def test_max(self, data, snapshot):
         data['title'] = 'X' * 51
         data['description'] = 'X' * 201

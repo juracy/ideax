@@ -21,12 +21,7 @@ fi
 
 python manage.py dumpdata > /dev/null
 
-if [ $? == 1 ]; then
-  python manage.py migrate
-  python manage.py loaddata initialdata.json
-fi
-
-python manage.py migrate
+python manage.py migrate_schemas --shared
 python manage.py compilemessages
 
 nginx

@@ -39,6 +39,7 @@ TENANT_APPS = [
     'django.contrib.admin',        
     'django.contrib.sessions',
     'django.contrib.messages',
+    'notifications',
 ]
 
 INSTALLED_APPS = [
@@ -55,7 +56,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'ideax.ideax.IdeaxConfig',
     'ideax.administration.AdministrationConfig',
-    'mptt',
+    'mptt',    
+    'notifications',
 ]
 
 TENANT_MODEL = "tenant.Client"

@@ -16,7 +16,8 @@
             <ul class="phase-list nav nav-pills flex-column">
               {% for value in idea_phase %}
                    <li class="nav-item" onclick="filterIdeas('{% url 'idea_filter' phase_pk=value.id %}')">
-                     <a class="nav-link {% if value.id == phase_req %} active {% endif %}" href="#">{{ value }}<span class="badge badge-pill badge-primary count-ideas">{{ value.qtd }}</span></a>
+                     <a class="nav-link {% if value.id == phase_req %} active {% endif %}" href="#">{{ value }}
+                     <span class="badge badge-pill badge-primary count-ideas">{{ value.qtd }}</span></a>
                   </li>
               {% endfor %}
             </ul>
