@@ -842,7 +842,7 @@ def report_ideas(request):
 
 
 @login_required
-@permission_required('ideax.add_idea', raise_exception=True)
+@permission_required('ideax.add_idea',raise_exception=True)
 def idea_new_from_challenge(request, challenge_pk):
     queryset = get_authors(request.user.email)
     challenge = get_object_or_404(Challenge, pk=challenge_pk)
