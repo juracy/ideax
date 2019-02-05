@@ -15,7 +15,7 @@
                     {% gravatar userP.email 130 %}
                 </div>
                 <div class="profile-name">
-                    {{ user.get_full_name|default:userP.username }}
+                    {{ userP.get_full_name|default:userP.username }}
                 </div>
                 <div class="profile-email">
                     {{ userP.email }}
