@@ -6,7 +6,7 @@ from .views import profile, SignUpView, login, who_innovates, set_authconfigurat
 urlpatterns = [
     path('accounts/login/', login, name='login'),
     path('accounts/logout/', auth_views.logout, name='logout'),
-    path('accounts/sign-up/', SignUpView.as_view(), name='sign-up'),
+    # path('accounts/sign-up/', SignUpView.as_view(), name='sign-up'),
     path('users/profile/<username>/', profile, name='profile'),
     path('users/whoinnovates/', who_innovates, name='whoinnovates'),
     path('configuration/set/', set_authconfiguration, name='set-configuration'),

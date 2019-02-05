@@ -13,6 +13,12 @@
         </div>
       {% endif %}
 
+    {% for message in messages %}
+      <div style="margin-top: 100px;" class="alert alert-dismissible alert-{% if message.tags == 'error' %}danger{%else%}{{message.tags}}{%endif%}">      
+            {{ message }}
+      </div>
+    {% endfor %}
+
       <form class="form-signin" method="post" action="{% url 'users:login' %}">
         {% csrf_token %}
         <img class="mb-4" src="{% static 'images/idea_launch.png' %}" alt="" width="72">
