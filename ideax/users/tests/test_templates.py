@@ -1,5 +1,4 @@
 from django.template import loader
-from pytest import mark
 
 
 class TestUserTemplates:
