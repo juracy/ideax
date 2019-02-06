@@ -21,3 +21,4 @@ docs/_build/
 .venv
 .coverage
 *.override.yml
+.pytest_cache
