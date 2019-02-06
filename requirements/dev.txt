@@ -4,9 +4,9 @@
 -r _lint.txt
 
 # Bibliotecas de apoio
-ipython==7.0.1                           # Utilizado para depurar código
+ipython==7.2.0                           # Utilizado para depurar código
 
 # Aplicações para apoiar o desenvolvimento
-django-extensions==2.1.3                 # Para uso do comando runserver_plus
+django-extensions==2.1.5                 # Para uso do comando runserver_plus
 Werkzeug==0.14.1                         # Dependência do django-extensions
 rope==0.11.0                             # Refactor

@@ -1,13 +1,13 @@
 pytest>=3.9.2                            # Framework de Teste
-pytest-django==3.4.3                     # Integração do pytest ao Django
-pytest-mock==1.10.0                      # Mocks
-pytest-sugar==0.9.1                      # Torna leitura da saída dos testes mais amigável
+pytest-django==3.4.7                     # Integração do pytest ao Django
+pytest-mock==1.10.1                      # Mocks
+pytest-sugar==0.9.2                      # Torna leitura da saída dos testes mais amigável
 pytest-watch==4.2.0                      # Executa continuamente os testes
-pytest-cov==2.6.0                        # Cobertura
+pytest-cov==2.6.1                        # Cobertura
 
 # Plugins para o pytest
 pytest-spec==1.1.0                       # Faz com que a saída dos testes pareça specs
-pytest-xdist==1.23.2                     # Executa os testes em paralelo
+pytest-xdist==1.26.1                     # Executa os testes em paralelo
 
 # Testes
 django-jenkins==0.110.0                  # Integração do Django com Jenkins
