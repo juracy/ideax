@@ -66,17 +66,18 @@ def mark_notifications_as_read(request):
 
 @login_required
 def idea_list(request):
+
     ideas = get_ideas_init(request)
     ideas['idea_phase'] = get_phases_count()
-    page = request.GET.get('page', 1)
-    paginator = Paginator(ideas['ideas'], 5)
+    # page = request.GET.get('page', 1)
+    # paginator = Paginator(ideas['ideas'], 5)
 
-    try:
-        ideas['ideas'] = paginator.page(page)
-    except PageNotAnInteger:
-        ideas['ideas'] = paginator.page(1)
-    except EmptyPage:
-        ideas['ideas'] = paginator.page(paginator.num_pages)
+    # try:
+    #     ideas['ideas'] = paginator.page(page)
+    # except PageNotAnInteger:
+    #     ideas['ideas'] = paginator.page(1)
+    # except EmptyPage:
+    #     ideas['ideas'] = paginator.page(paginator.num_pages)
     return render(request, 'ideax/idea_list.html', ideas)
 
 
