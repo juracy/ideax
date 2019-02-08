@@ -276,7 +276,6 @@ $(function () {
           $(".empty-filter").html(response.html_idea_list);
         }
         ideaView(localStorage.getItem("ideaView"));
-        console.log("$('.card').addClass('grid-item')");
     });
 
     doPost.fail(function (response){
@@ -420,8 +419,6 @@ function filterIdeas(url){
         $(".empty-filter").html(data.html_idea_list);
       }
       ideaView(localStorage.getItem("ideaView"));
-
-      console.log("$('.card').addClass('grid-item')");
     }
   });
 };
@@ -559,29 +556,26 @@ $('a#grid-view').click(function(){
 
 
 function ideaView(ideaView){
-     if (ideaView == 1) {console.log(ideaView)
+     if (ideaView == 1) {
         $('.card').removeClass('grid-item');
-         //$('#idea-list-group').removeClass('card-columns');
-         $('.idea-cards').css('flex-direction','row');
-         $('.idea-cards').addClass('mb-2');
-         $('.card-img-top').addClass('m-2');
-         $('.card-body').addClass('w-50');
-         $('.card-footer').addClass('card-footer-list');
-         $('.card-text').css('height', '86px');
-         $('.card-icons').css('position', 'relative');
-         $('.card-icons').css('bottom', '12px');
-
-    }else { console.log(ideaView)
-         //$('#idea-list-group').addClass('card-columns');
-         $('.card').addClass('grid-item');
-         $('.idea-cards').css('flex-direction','column');
-         $('.idea-cards').removeClass('mb-2');
-         $('.card-img-top').removeClass('m-2');
-         $('.card-body').removeClass('w-50');
-         $('.card-footer').removeClass('card-footer-list');
-         $('.card-text').css('height', "")
-         $('.card-icons').css('position', 'absolute');
-         $('.card-icons').css('bottom', '40px');
+        $('.idea-cards').css('flex-direction','row');
+        $('.idea-cards').addClass('mb-2');
+        $('.card-img-top').addClass('m-2');
+        $('.card-body').addClass('w-50');
+        $('.card-footer').addClass('card-footer-list');
+        $('.card-text').css('height', '86px');
+        $('.card-icons').css('position', 'relative');
+        $('.card-icons').css('bottom', '12px');
+    }else{
+        $('.card').addClass('grid-item');
+        $('.idea-cards').css('flex-direction','column');
+        $('.idea-cards').removeClass('mb-2');
+        $('.card-img-top').removeClass('m-2');
+        $('.card-body').removeClass('w-50');
+        $('.card-footer').removeClass('card-footer-list');
+        $('.card-text').css('height', "")
+        $('.card-icons').css('position', 'absolute');
+        $('.card-icons').css('bottom', '40px');
      }
 }
 
