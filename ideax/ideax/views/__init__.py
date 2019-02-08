@@ -733,7 +733,7 @@ def challenge_remove(request, pk):
         messages.error(request, _('Not supported action'))
     return challenge_list(request)
 
-
+@login_required
 def challenge_list(request):
     if (request.user.has_perm(settings.PERMISSIONS["MANAGE_IDEA"])):
         challenges = Challenge.objects.filter(discarted=False)

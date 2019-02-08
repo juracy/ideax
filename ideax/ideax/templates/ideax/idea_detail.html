@@ -160,10 +160,8 @@
             {% include 'ideax/includes/evaluation_detail.html' %}
           {%endif%}
         </div>
-        <div class="tab-pane fade" id="timeline" role="tabpanel" aria-labelledby="timeline-tab">
-          {%if perms.ideax.manage_idea %}
-            {% include 'ideax/includes/timeline_detail.html' %}
-          {%endif%}
+        <div class="tab-pane fade" id="timeline" role="tabpanel" aria-labelledby="timeline-tab">          
+            {% include 'ideax/includes/timeline_detail.html' %}          
         </div>
       </div>
     </div>

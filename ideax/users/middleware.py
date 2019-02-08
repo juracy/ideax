@@ -28,6 +28,7 @@ class EmailTenantMiddleware(TenantMiddleware):
         if hasattr(settings, 'PUBLIC_SCHEMA_URLCONF') and request.tenant.schema_name == get_public_schema_name():
             request.urlconf = settings.PUBLIC_SCHEMA_URLCONF
 
+
 class TenantCookieMiddleware(MIDDLEWARE_MIXIN):
     def process_response(self, request, response):
         if hasattr(request, 'session') and request.session.get('client'):

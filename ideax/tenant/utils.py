@@ -1,8 +1,10 @@
 from django.core.management import call_command
 from django.db import connection
-from tenant_schemas.utils import get_tenant_model
+from tenant_schemas.utils import get_tenant_model, remove_www
 from ideax.settings.django._core import PATH_FILE_INIT_DATA
-
+from django.contrib import messages
+from django.shortcuts import redirect
+from django.http import Http404
 
 def get_tenant(model, hostname):
     return model.objects.get(domain_url=hostname)
@@ -13,7 +15,11 @@ def set_connection(request, hostname):
 
     TenantModel = get_tenant_model()
 
-    tenant = get_tenant(TenantModel, hostname)
+    try:
+        tenant = get_tenant(TenantModel, hostname)
+    except TenantModel.DoesNotExist:
+        raise Http404("Tenant Not Found")
+
     assert isinstance(tenant, TenantModel)
 
     request.tenant = tenant

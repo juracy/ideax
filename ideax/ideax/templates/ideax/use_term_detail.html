@@ -26,10 +26,5 @@
       {{ use_term.term|safe }}
     </pre-wrap>
   </div>
-  <hr>
-  <div class="button-group">
-    <a href="{% url 'use_term_list' %}">{% trans 'Return' %}</a>
-    <button type="button" onclick="location.href='{% url 'use_term_edit' pk=use_term.pk %}';" class="btn btn-primary"> {% trans 'Edit' %} </button>
-  </div>
 </div>
 {% endblock %}

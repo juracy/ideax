@@ -708,7 +708,7 @@ msgstr "criou a ideia"
 
 #: ideax/ideax/templates/ideax/includes/timeline_detail.html:47
 msgid "changed the idea phase to"
-msgstr "alterou a fase da ideia para"
+msgstr "A fase da ideia foi alterada para"
 
 #: ideax/ideax/templates/ideax/index.html:9
 msgid "Sharing ideas!"
@@ -1125,7 +1125,7 @@ msgstr "Formulário inválido"
 
 #: ideax/users/views.py:95
 msgid "Tenant not found"
-msgstr ""
+msgstr "Organização não cadastrada!"
 
 #: ideax/users/views.py:98
 msgid "Invalid tenant model"
