@@ -24,7 +24,7 @@ def profile(request, username):
     if request.user.username == username:
         votes = Popular_Vote.objects.filter(voter=request.user.id).values(
             'id').annotate(contador=Count(Case(When(like=True, then=1))))
-        comments = Comment.objects.filter(author_id=request.user.id).values('raw_comment')
+        comments = Comment.objects.filter(author_id=request.user.id).count()
         filter_user = request.user
         query_ideas = request.user.userprofile.authors.filter(discarded=False)
     else:
@@ -32,7 +32,7 @@ def profile(request, username):
         pk = user[0].id
         votes = Popular_Vote.objects.filter(voter=pk).values(
             'voter_id').annotate(contador=Count(Case(When(like=True, then=1))))
-        comments = Comment.objects.filter(author_id=pk).values('raw_comment')
+        comments = Comment.objects.filter(author_id=pk).count()
         filter_user = UserProfile.objects.filter(id=pk)[0].user
         query_ideas = UserProfile.objects.filter(id=pk)[0].user.userprofile.authors.filter(discarded=False)
     if not votes:
@@ -46,7 +46,7 @@ def profile(request, username):
             'userP': filter_user,
             'ideas': query_ideas,
             'popular_vote': getvotes,
-            'comments': len(comments),
+            'comments': comments,
             'username': request.user.username,
         }
     )
@@ -55,10 +55,8 @@ def profile(request, username):
 @login_required
 def who_innovates(request):
     data = dict()
-    data['ideas'] = Idea.objects.values("author__user__username", "author__user__email", "author_id").annotate(
-        qtd=Count('author_id', filter=Q(discarded=False))).annotate(
-        count_dislike=Count(Case(When(popular_vote__like=False, then=1)))).annotate(
-        count_like=Count(Case(When(popular_vote__like=True, then=1))))
+    data['ideas'] = Idea.objects.values("author__user__username", "author__user__email", "author_id").filter(discarded=False).annotate(
+        qtd=Count('author_id'))
 
     return render(request, 'users/who_innovates.html', data)
 
