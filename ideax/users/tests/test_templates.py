@@ -7,15 +7,15 @@ class TestUserTemplates:
     def test_profile_no_idea(self, common_user):
         body = loader.render_to_string(
             'users/profile.html',
-            {'user': common_user, 'ideas': []}
+            {'userP': common_user, 'ideas': []}
         )
-        assert 'Author of 0 ideas' in body
+        assert 'No ideas' in body
 
     @mark.skip
     def test_profile_one_idea(self, common_user):
         body = loader.render_to_string(
             'users/profile.html',
-            {'user': common_user, 'ideas': [1]}
+            {'userP': common_user, 'ideas': [1]}
         )
         assert 'Author of one idea' in body
 
@@ -23,15 +23,15 @@ class TestUserTemplates:
     def test_profile_one_idea_ptbr(self, common_user, set_pt_br_language):
         body = loader.render_to_string(
             'users/profile.html',
-            {'user': common_user, 'ideas': [1]}
+            {'userP': common_user, 'ideas': [1]}
         )
-        assert 'Autor de uma ideia' in body
+        assert 'Autor de 1 ideia' in body
 
     @mark.skip
     def test_profile_several_ideas(self, common_user):
         body = loader.render_to_string(
             'users/profile.html',
-            {'user': common_user, 'ideas': [1, 2]}
+            {'userP': common_user, 'ideas': [1, 2]}
         )
         assert 'Author of 2 ideas' in body
 
