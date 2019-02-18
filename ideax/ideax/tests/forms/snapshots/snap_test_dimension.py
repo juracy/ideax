@@ -30,12 +30,3 @@ snapshots['TestDimensionForm.test_invalid 1'] = {
         'This field is required.'
     ]
 }
-
-snapshots['TestDimensionForm.test_max_ptbr 1'] = {
-    'description': [
-        'Certifique-se de que o valor tenha no máximo 500 caracteres (ele possui 501).'
-    ],
-    'title': [
-        'Certifique-se de que o valor tenha no máximo 200 caracteres (ele possui 201).'
-    ]
-}
