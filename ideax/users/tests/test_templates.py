@@ -7,9 +7,9 @@ class TestUserTemplates:
     def test_profile_no_idea(self, common_user):
         body = loader.render_to_string(
             'users/profile.html',
-            {'user': common_user, 'ideas': []}
+            {'userP': common_user, 'ideas': []}
         )
-        assert 'Author of 0 ideas' in body
+        assert 'No ideas' in body
 
     @mark.skip
     def test_profile_one_idea(self, common_user):
