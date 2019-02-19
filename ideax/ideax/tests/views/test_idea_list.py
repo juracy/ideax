@@ -16,7 +16,6 @@ class TestIdeaListView:
         response = idea_list(request)
         assert (response.status_code, response.url) == (302, '/accounts/login/?next=/idea/list')
 
-
     def test_idea_list_empty(self, get_ideas_init, rf, admin_user):
         get_ideas_init.return_value = {
             'ideas': [],

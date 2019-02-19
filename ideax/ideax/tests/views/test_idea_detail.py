@@ -1,8 +1,6 @@
 from django.contrib.auth.models import AnonymousUser
-from model_mommy import mommy
-from pytest import fixture, mark, raises
+from pytest import fixture, raises
 from django.http.response import Http404
-from django.core.exceptions import PermissionDenied
 
 from ...views import idea_detail
 
