@@ -31,7 +31,7 @@ from ..models import (
     Idea, Criterion, Popular_Vote, Phase_History, IdeaPhase,
     Comment, Evaluation, Category_Image, Challenge, Dimension,
 )
-from ..forms import IdeaForm, CriterionForm, EvaluationForm, ChallengeForm
+from ..forms import IdeaForm, CriterionForm, EvaluationForm, ChallengeForm, IdeaPhaseForm
 from ...singleton import ProfanityCheck
 from ...mail_util import MailUtil
 from ...util import get_ip, get_client_ip, audit
@@ -893,6 +893,66 @@ def get_authors(removed_author):
         .exclude(user__email__isnull=True) \
         .exclude(user__email__exact='') \
         .exclude(user__email=removed_author)
+
+
+@login_required
+@permission_required('ideax.add_ideaphase', raise_exception=True)
+def ideaphase_new(request):
+    if request.method == "POST":
+        form = IdeaPhaseForm(request.POST)
+        if form.is_valid():
+            ideaphase = form.save()
+            ideaphase.save()
+            messages.success(request, _('Idea Phase saved successfully!'))
+            audit(request.user.username, get_client_ip(request), 'CREATE_IDEA_PHASE', IdeaPhase.__name__, ideaphase.id)
+            return redirect('ideaphase_list')
+    else:
+        form = IdeaPhaseForm()
+    return render(request, 'ideax/ideaphase_new.html', {'form': form})
+
+
+@login_required
+def ideaphase_list(request):
+    audit(request.user.username, get_client_ip(request), 'IDEA_PHASE_LIST', IdeaPhase.__name__, '')
+    return render(request, 'ideax/ideaphase_list.html', get_ideaphase_list())
+
+
+def get_ideaphase_list():
+    return {'ideaphase_list': IdeaPhase.objects.all()}
+
+
+@login_required
+@permission_required('ideax.change_ideaphase', raise_exception=True)
+def ideaphase_edit(request, pk):
+    ideaphase = get_object_or_404(IdeaPhase, pk=pk)
+    if request.method == "POST":
+        form = IdeaPhaseForm(request.POST, instance=ideaphase)
+        if form.is_valid():
+            ideaphase = form.save(commit=False)
+            ideaphase.save()
+            messages.success(request, _('Idea Phase changed successfully!'))
+            audit(
+                request.user.username,
+                get_client_ip(request),
+                'EDIT_IDEA_PHASE__SAVE',
+                IdeaPhase.__name__,
+                str(ideaphase.id)
+            )
+            return redirect('ideaphase_list')
+    else:
+        form = IdeaPhaseForm(instance=ideaphase)
+
+    return render(request, 'ideax/ideaphase_edit.html', {'form': form})
+
+
+@login_required
+@permission_required('ideax.delete_ideaphase', raise_exception=True)
+def ideaphase_remove(request, pk):
+    ideaphase = get_object_or_404(IdeaPhase, pk=pk)
+    ideaphase.delete()
+    messages.success(request, _('Idea Phase removed successfully!'))
+    audit(request.user.username, get_client_ip(request), 'REMOVE_IDEA_PHASE_SAVE', IdeaPhase.__name__, str(pk))
+    return redirect('ideaphase_list')
 
 
 # def email_notification(request, idea, username, email, notification):
