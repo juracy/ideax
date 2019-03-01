@@ -19,7 +19,7 @@ class IdeaPhase(models.Model):
         verbose_name = "Idea Phase"
 
 
-class Phase_History(models.Model):
+class Phase_History(models.Model): # noqa
     current_phase = models.ForeignKey('IdeaPhase', on_delete=models.DO_NOTHING)
     previous_phase = models.PositiveSmallIntegerField()
     date_change = models.DateTimeField('data da mudança')
@@ -173,7 +173,7 @@ class Dimension(models.Model):
         return self.title
 
 
-class Category_Dimension(models.Model):
+class Category_Dimension(models.Model): # noqa
     description = models.CharField(max_length=200)
     value = models.IntegerField()
     dimension = models.ForeignKey('Dimension', on_delete=models.PROTECT)
@@ -201,7 +201,7 @@ class UseTermManager(models.Manager):
         return False
 
 
-class Use_Term(models.Model):
+class Use_Term(models.Model): # noqa
     creator = models.ForeignKey('users.UserProfile', on_delete=models.PROTECT)
     term = models.TextField(max_length=12500)
     init_date = models.DateTimeField()
