@@ -1,3 +1,23 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <arthur.doliveira@dataprev.gov.br>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-03-01 15:17-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 2.0.7\n"
+
 #: ideax/administration/templates/administration/index.html:15
 #: ideax/users/templates/users/profile.html:8
 msgid "Back to top"
@@ -36,12 +56,12 @@ msgstr ""
 
 #: ideax/administration/templates/administration/index.html:47
 #: ideax/ideax/templates/ideax/use_term_list.html:11
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Terms of Use"
+msgstr "Termos de uso!"
 
 #: ideax/administration/templates/administration/index.html:54
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "New Terms of Use"
+msgstr "Novo termo de uso!"
 
 #: ideax/administration/templates/administration/index.html:60
 #: ideax/ideax/templates/ideax/category_list.html:11
@@ -262,7 +282,7 @@ msgid "Return"
 msgstr ""
 
 #: ideax/ideax/templates/ideax/base.html:72
-#, python-format
+#, python-formatNo Term of Use found
 msgid "Hi, %(name)s!"
 msgstr ""
 
@@ -316,8 +336,8 @@ msgstr ""
 
 #: ideax/ideax/templates/ideax/base.html:151
 #: ideax/ideax/templates/ideax/base.html:155
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Terms of use"
+msgstr "Termos de uso!"
 
 #: ideax/ideax/templates/ideax/base.html:158
 msgid "Cancel"
@@ -528,7 +548,7 @@ msgstr ""
 
 #: ideax/ideax/templates/ideax/idea_detail.html:95
 msgid "Timeline"
-msgstr "Linha do Tempo"
+msgstr ""
 
 #: ideax/ideax/templates/ideax/idea_detail.html:143
 msgid "Support Markdown"
@@ -600,8 +620,8 @@ msgid "Create Idea"
 msgstr ""
 
 #: ideax/ideax/templates/ideax/ideaphase_edit.html:6
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Update Idea Phase"
+msgstr ""
 
 #: ideax/ideax/templates/ideax/ideaphase_list.html:6
 #: ideax/ideax/templates/ideax/ideaphase_new.html:7
@@ -681,8 +701,8 @@ msgid "Close"
 msgstr ""
 
 #: ideax/ideax/templates/ideax/includes/partial_ideaphase_list.html:21
-msgid "changed the idea phase to"
-msgstr "alterou a fase da ideia para"
+msgid "the idea phase"
+msgstr ""
 
 #: ideax/ideax/templates/ideax/includes/partial_use_term_list.html:5
 msgid "Creator"
@@ -697,8 +717,8 @@ msgid "Detail"
 msgstr ""
 
 #: ideax/ideax/templates/ideax/includes/partial_use_term_list.html:25
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "the terms of use"
+msgstr ""
 
 #: ideax/ideax/templates/ideax/includes/profile_idea.html:4
 msgid "There are no ideas!"
@@ -706,19 +726,19 @@ msgstr ""
 
 #: ideax/ideax/templates/ideax/includes/timeline_detail.html:17
 msgid "This idea was"
-msgstr "Essa ideia foi"
+msgstr ""
 
 #: ideax/ideax/templates/ideax/includes/timeline_detail.html:17
 msgid "evaluated"
-msgstr "avaliada"
+msgstr ""
 
 #: ideax/ideax/templates/ideax/includes/timeline_detail.html:33
 msgid "created the idea"
-msgstr "criou a ideia"
+msgstr ""
 
 #: ideax/ideax/templates/ideax/includes/timeline_detail.html:47
 msgid "changed the idea phase to"
-msgstr "alterou a fase da ideia para"
+msgstr ""
 
 #: ideax/ideax/templates/ideax/index.html:12
 msgid "Sharing ideas!"
@@ -789,9 +809,8 @@ msgstr ""
 
 #: ideax/ideax/templates/ideax/use_term.html:10
 #: ideax/ideax/templates/ideax/use_term_detail.html:7
-msgid "Term of use accepted!"
-
-msgstr "Termo de uso aceito!"
+msgid "Term Of Use"
+msgstr ""
 
 #: ideax/ideax/templates/ideax/use_term_detail.html:18
 msgid "Expiration Date "
@@ -802,12 +821,12 @@ msgid "Status "
 msgstr ""
 
 #: ideax/ideax/templates/ideax/use_term_edit.html:7
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Update Term of Use"
+msgstr ""
 
 #: ideax/ideax/templates/ideax/use_term_list.html:6
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "New Term of Use"
+msgstr ""
 
 #: ideax/ideax/templates/ideax/use_term_new.html:7
 msgid "Create Use Term"
@@ -850,9 +869,8 @@ msgid "You're a co-author of a new idea!"
 msgstr ""
 
 #: ideax/ideax/views/__init__.py:199
-msgid "Term of use accepted!"
-
-msgstr "Termo de uso aceito!"
+msgid "Idea saved successfully!"
+msgstr ""
 
 #: ideax/ideax/views/__init__.py:211
 msgid "You have been mentioned in an idea!"
@@ -864,12 +882,12 @@ msgid "Not supported action"
 msgstr ""
 
 #: ideax/ideax/views/__init__.py:292
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Criterion saved successfully!"
+msgstr ""
 
 #: ideax/ideax/views/__init__.py:326
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Criterion changed successfully!"
+msgstr ""
 
 #: ideax/ideax/views/__init__.py:392
 msgid "An idea of yours has ben evaluated"
@@ -884,9 +902,8 @@ msgid "Evaluation done successfully!"
 msgstr ""
 
 #: ideax/ideax/views/__init__.py:419
-msgid "Term of use accepted!"
-
-msgstr "Termo de uso aceito!"
+msgid "Criterion removed successfully!"
+msgstr ""
 
 #: ideax/ideax/views/__init__.py:439
 msgid "liked your idea"
@@ -897,8 +914,8 @@ msgid "Your idea has reached a new phase!"
 msgstr ""
 
 #: ideax/ideax/views/__init__.py:515
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Phase change successfully!"
+msgstr ""
 
 #: ideax/ideax/views/__init__.py:522
 msgid "Phase change"
@@ -925,12 +942,12 @@ msgid "Your comment has been posted."
 msgstr ""
 
 #: ideax/ideax/views/__init__.py:675 ideax/ideax/views/__init__.py:694
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Challenge saved successfully!"
+msgstr ""
 
 #: ideax/ideax/views/__init__.py:718
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Challenge removed successfully!"
+msgstr ""
 
 #: ideax/ideax/views/__init__.py:854
 msgid "Bad image format."
@@ -945,62 +962,60 @@ msgid "Invalid request!"
 msgstr ""
 
 #: ideax/ideax/views/__init__.py:906
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Idea Phase saved successfully!"
+msgstr ""
 
 #: ideax/ideax/views/__init__.py:933
-
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Idea Phase changed successfully!"
+msgstr ""
 
 #: ideax/ideax/views/__init__.py:953
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Idea Phase removed successfully!"
+msgstr ""
 
 #: ideax/ideax/views/category.py:29
-
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Category saved successfully!"
+msgstr ""
 
 #: ideax/ideax/views/category.py:45
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Category changed successfully!"
+msgstr ""
 
-ideax/ideax/views/category.py:66
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+#: ideax/ideax/views/category.py:66
+msgid "Category removed successfully!"
+msgstr ""
 
 #: ideax/ideax/views/category_image.py:24
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Category Image saved successfully!"
+msgstr ""
 
 #: ideax/ideax/views/category_image.py:54
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Category Image changed successfully!"
+msgstr ""
 
 #: ideax/ideax/views/category_image.py:72
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Category Image removed successfully!"
+msgstr ""
 
 #: ideax/ideax/views/dimension.py:25
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Dimension saved successfully!"
+msgstr ""
 
 #: ideax/ideax/views/dimension.py:47
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Dimension changed successfully!"
+msgstr ""
 
 #: ideax/ideax/views/dimension.py:67
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Dimension removed successfully!"
+msgstr ""
 
 #: ideax/ideax/views/use_term.py:30
 msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgstr ""
 
 #: ideax/ideax/views/use_term.py:34
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Term of use already accepted!"
+msgstr ""
 
 #: ideax/ideax/views/use_term.py:70
 msgid "Invalid Final Date"
@@ -1011,16 +1026,16 @@ msgid "Already exists a active Term Of Use"
 msgstr ""
 
 #: ideax/ideax/views/use_term.py:77
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Term of Use saved successfully!"
+msgstr ""
 
 #: ideax/ideax/views/use_term.py:98
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "Terms of Use removed successfully!"
+msgstr ""
 
 #: ideax/ideax/views/use_term.py:119 ideax/ideax/views/use_term.py:126
-msgid "Term of use accepted!"
-msgstr "Termo de uso aceito!"
+msgid "No Term of Use found"
+msgstr ""
 
 #: ideax/users/forms.py:9
 msgid "First name"

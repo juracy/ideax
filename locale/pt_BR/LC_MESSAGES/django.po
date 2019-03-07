@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-01 11:20-0300\n"
+"POT-Creation-Date: 2019-03-01 15:17-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,8 +24,8 @@ msgid "Back to top"
 msgstr "Voltar para o topo"
 
 #: ideax/administration/templates/administration/index.html:20
-msgid "Idea"
-msgstr "Ideia"
+msgid "Ideas"
+msgstr "Ideias"
 
 #: ideax/administration/templates/administration/index.html:27
 #: ideax/ideax/templates/ideax/base.html:136
@@ -86,8 +86,8 @@ msgid "New Category Image"
 msgstr "Nova Imagem de Categoria"
 
 #: ideax/administration/templates/administration/index.html:86
-msgid "New Criterion"
-msgstr "Novo Critério"
+msgid "Criterion"
+msgstr "Critério"
 
 #: ideax/administration/templates/administration/index.html:93
 #: ideax/ideax/templates/ideax/criterion_list.html:6
@@ -96,8 +96,8 @@ msgid "New Criterion"
 msgstr "Novo Critério"
 
 #: ideax/administration/templates/administration/index.html:99
-msgid "Dimensions"
-msgstr "Dimensões"
+msgid "Dimension"
+msgstr "Dimensão"
 
 #: ideax/administration/templates/administration/index.html:106
 #: ideax/ideax/templates/ideax/dimension_list.html:6
@@ -620,13 +620,13 @@ msgid "Create Idea"
 msgstr "Cadastrar Ideia"
 
 #: ideax/ideax/templates/ideax/ideaphase_edit.html:6
-msgid "Update Idea"
-msgstr "Atualizar Ideia"
+msgid "Update Idea Phase"
+msgstr "Atualizar Fase da Ideia"
 
 #: ideax/ideax/templates/ideax/ideaphase_list.html:6
 #: ideax/ideax/templates/ideax/ideaphase_new.html:7
-msgid "New Idea"
-msgstr "Nova Ideia"
+msgid "New Idea Phase"
+msgstr "Nova Fase da Ideia"
 
 #: ideax/ideax/templates/ideax/includes/empty.html:4
 msgid "There are no ideas at this stage!"
@@ -701,8 +701,8 @@ msgid "Close"
 msgstr "Fechar"
 
 #: ideax/ideax/templates/ideax/includes/partial_ideaphase_list.html:21
-msgid "changed the idea phase to"
-msgstr "alterou a fase da ideia para"
+msgid "the idea phase"
+msgstr "a fase da ideia"
 
 #: ideax/ideax/templates/ideax/includes/partial_use_term_list.html:5
 msgid "Creator"
@@ -879,8 +879,8 @@ msgid "Invalid reCAPTCHA. Please try again."
 msgstr "reCAPTCHA inválido. Por favor tente de novo."
 
 #: ideax/ideax/views/__init__.py:196
-msgid "Author of one idea"
-msgstr "Autor de uma ideia"
+msgid "You're a co-author of a new idea!"
+msgstr "Você é co-autor de uma nova ideia"
 
 #: ideax/ideax/views/__init__.py:199
 msgid "Idea saved successfully!"
@@ -976,16 +976,16 @@ msgid "Invalid request!"
 msgstr "Requisição Inválida"
 
 #: ideax/ideax/views/__init__.py:906
-msgid "Idea saved successfully!"
-msgstr "Ideia salva com sucesso!"
+msgid "Idea Phase saved successfully!"
+msgstr "Fase da Ideia salva com sucesso!"
 
 #: ideax/ideax/views/__init__.py:933
-msgid "Phase change successfully!"
-msgstr "Fase alterada com sucesso!"
+msgid "Idea Phase changed successfully!"
+msgstr "Fase da Ideia alterada com sucesso!"
 
 #: ideax/ideax/views/__init__.py:953
-msgid "Idea saved successfully!"
-msgstr "Ideia salva com sucesso!"
+msgid "Idea Phase removed successfully!"
+msgstr "Fase da Ideia salva com sucesso!"
 
 #: ideax/ideax/views/category.py:29
 msgid "Category saved successfully!"
