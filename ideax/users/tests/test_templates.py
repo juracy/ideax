@@ -3,7 +3,7 @@ from django.template import loader
 
 class TestUserTemplates:
 
-  def test_profile_no_idea(self, common_user):
+    def test_profile_no_idea(self, common_user):
         body = loader.render_to_string(
             'users/profile.html',
             {'userP': common_user, 'ideas': []}
@@ -19,7 +19,6 @@ class TestUserTemplates:
             }
         )
         assert 'Nenhuma ideia' in body
-
 
     def test_profile_one_idea(self, common_user):
         body = loader.render_to_string(
