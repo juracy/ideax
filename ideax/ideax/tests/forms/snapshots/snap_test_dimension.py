@@ -16,26 +16,17 @@ snapshots['TestDimensionForm.test_max 1'] = {
     ]
 }
 
-snapshots['TestDimensionForm.test_invalid 1'] = {
+snapshots['TestDimensionForm.test.git/logs/refs/remotes/samyr/crudIdeaPhase'invalid 1'] = {
     'description': [
-        'This field is required.'
+        'This field is required.'.git/logs/refs/remotes/samyr/crudIdeaPhase'
     ],
     'init_date': [
-        'This field is required.'
+        'This field is required.'.git/logs/refs/remotes/samyr/crudIdeaPhase'
     ],
     'title': [
-        'This field is required.'
+        'This field is required.'.git/logs/refs/remotes/samyr/crudIdeaPhase'
     ],
     'weight': [
         'This field is required.'
-    ]
-}
-
-snapshots['TestDimensionForm.test_max 1'] = {
-    'description': [
-        'Ensure this value has at most 500 characters (it has 501).'
-    ],
-    'title': [
-        'Ensure this value has at most 200 characters (it has 201).'
     ]
 }
