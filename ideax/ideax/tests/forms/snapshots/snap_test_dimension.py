@@ -30,3 +30,12 @@ snapshots['TestDimensionForm.test_invalid 1'] = {
         'This field is required.'
     ]
 }
+
+snapshots['TestDimensionForm.test_max 1'] = {
+    'description': [
+        'Ensure this value has at most 500 characters (it has 501).'
+    ],
+    'title': [
+        'Ensure this value has at most 200 characters (it has 201).'
+    ]
+}
