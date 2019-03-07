@@ -1529,26 +1529,30 @@ a.notification-item svg{
     width: 280px;
     height: 505px;
     margin: 10px;
+}
 
-  }
+.card-body{
+    padding-bottom: 0.2rem !important;
+}
 
-  .card-body{
-      padding-bottom: 0.2rem !important;
-  }
+.card-img-top{
+    height:124px;
+    width: 276px;
 
-  .card-img-top{
-        height:124px;
-        width: 276px;
+    overflow: hidden;
+}
 
-        overflow: hidden;
-  }
+.card-icons{
+position:absolute;
+bottom: 40px;
+right: 0;
+}
 
-  .card-icons{
-    position:absolute;
-    bottom: 40px;
-    right: 0;
-  }
 .challenge-buttons, .edit, .delete{
 
   color: #ffffff !important;
 }
+
+.hide {
+    display: none;
+  }

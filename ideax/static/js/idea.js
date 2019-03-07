@@ -418,6 +418,8 @@ function filterIdeas(url){
         $(".empty-filter").empty();
         $(".empty-filter").html(data.html_idea_list);
       }
+      $('#dropdownMenuButton span.default').removeClass('hide');
+      $('#dropdownMenuButton span.option').addClass('hide');
       ideaView(localStorage.getItem("ideaView"));
     }
   });
@@ -494,8 +496,7 @@ $(function(){$(".scroll").click(function(){$("html,body").animate({scrollTop:$("
 
 //sort ideas
 
-$('a#ideaSort').click(function () {
-
+$('a.ideaSort').click(function () {
     var $divs = $(".infinite-item");
 
     if(this.name == 'thumbsUp'){
@@ -534,8 +535,9 @@ $('a#ideaSort').click(function () {
         });
         $("#idea-list-group").html(creationDateOrderedDivs);
     }
-
     $('#dropdownMenuButton span.option').text($(this).text());
+    $('#dropdownMenuButton span.default').addClass('hide');
+    $('#dropdownMenuButton span.option').removeClass('hide');
 });
 
 //end of sort ideas
@@ -545,13 +547,11 @@ $('a#ideaSort').click(function () {
 $('a#list-view').click(function(){
     localStorage.setItem("ideaView", "1");
     ideaView(localStorage.getItem("ideaView"));
-
 });
 
 $('a#grid-view').click(function(){
     localStorage.setItem("ideaView", "0");
     ideaView(localStorage.getItem("ideaView"));
-
 });
 
 

@@ -80,3 +80,57 @@ To work with translations, you need to install gettext tool.
 After, compile your messages.
 
 `$ ./manage.py compilemessages`
+
+
+=== Tenant configuration
+To work with tenants, you need to follow the steps bellow:
+
+First of all, change the database configuration to connect to PostgreSQL updating the .env file
+
+[source, python]
+DATABASE_NAME=database
+DATABASE_USER=user
+DATABASE_PASSWORD=password
+DATABASE_HOST=host
+DATABASE_PORT=5432
+
+Install the PostgreSQL adapter __psycopg2__:
+
+`$ pip instal psycopg2`
+
+Create the shared apps on the schema
+
+`$ ./manage.py migrate_schemas --shared`
+
+Now it's necessary to create a tenant model. To do it, access the python shell
+
+`$ ./manage.py shell`
+
+To create a public tenant, insert the code bellow:
+
+[source, python]
+from ideax.tenant.models import Client
+tenant = Client(domain_url='localhost',
+                schema_name='public',
+                name='Ideia X',
+                on_trial=False)
+tenant.save()
+
+
+To create dataprev tenant:
+
+[source, python]
+from ideax.tenant.models import Client
+tenant = Client(domain_url='dataprev.gov.br',
+                schema_name='dataprev',
+                name='Dataprev',
+                on_trial=False)
+tenant.save()
+
+Using dataprev tenant, we are gonna create a super user:
+
+`$ ./manage.py createsuperuser --username=admin@dataprev.gov.br --schema=dataprev`
+
+and populate the database with some initial datas:
+
+`$ ./manage.py tenant_command loaddata docker/initialdata.json --schema=dataprev`

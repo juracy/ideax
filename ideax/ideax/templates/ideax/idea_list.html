@@ -127,14 +127,15 @@
             <div class="col-lg-6">
             <div class="btn-group float-right">
                 <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span>{% trans 'Sorted by' %}: </span><span class="option">{% trans 'Highest positive votes' %}</span>
+                    <span>{% trans 'Sorted by' %}: </span><span class="default hide">{% trans 'Highest positive votes' %}</span>
+                    <span class="option">{% trans 'Highest positive votes' %}</span>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item" href="#" id="ideaSort" name='thumbsUp'>{% trans 'Highest positive votes' %}</a>
-                    <a class="dropdown-item" href="#" id="ideaSort" name='thumbsDown'>{% trans 'Highest negative votes' %}</a>
-                    <a class="dropdown-item" href="#" id="ideaSort" name='comments'>{% trans 'Most discussed' %}</a>
-                    <a class="dropdown-item" href="#" id="ideaSort" name='alphabetic'>{% trans 'Alphabetical' %}</a>
-                    <a class="dropdown-item" href="#" id="ideaSort" name='creationOrder'>{% trans 'Latest' %}</a>
+                    <a class="dropdown-item ideaSort" href="#" name='thumbsUp'>{% trans 'Highest positive votes' %}</a>
+                    <a class="dropdown-item ideaSort" href="#" name='thumbsDown'>{% trans 'Highest negative votes' %}</a>
+                    <a class="dropdown-item ideaSort" href="#" name='comments'>{% trans 'Most discussed' %}</a>
+                    <a class="dropdown-item ideaSort" href="#" name='alphabetic'>{% trans 'Alphabetical' %}</a>
+                    <a class="dropdown-item ideaSort" href="#" name='creationOrder'>{% trans 'Latest' %}</a>
                 </div>
             </div>
             </div>
