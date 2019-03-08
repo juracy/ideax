@@ -1,5 +1,4 @@
 from django.urls import reverse
-from pytest import mark
 
 
 class TestUsersUrls:
@@ -14,6 +13,5 @@ class TestUsersUrls:
     def test_sign_up(self):
         assert reverse(f'{self.namespace}:sign-up') == '/accounts/sign-up/'
 
-    @mark.skip
     def test_profile(self):
-        assert reverse(f'{self.namespace}:profile') == '/users/profile/'
+        assert reverse(f'{self.namespace}:profile', args=['username']) == '/users/profile/username/'

@@ -57,6 +57,10 @@ urlpatterns = [
     path('dimension/', views.dimension_list, name='dimension_list'),
     path('dimension/<int:pk>/edit/', views.dimension_edit, name='dimension_edit'),
     path('dimension/<int:pk>/remove/', views.dimension_remove, name='dimension_remove'),
+    path('ideaphase/new/', views.ideaphase_new, name='ideaphase_new'),
+    path('ideaphase/list/', views.ideaphase_list, name='ideaphase_list'),
+    path('ideaphase/<int:pk>/edit/', views.ideaphase_edit, name='ideaphase_edit'),
+    path('ideaphase/<int:pk>/remove/', views.ideaphase_remove, name='ideaphase_remove'),
     re_path('author/', views.user_profile_page, name='user_profile_page'),
     path('notifications/dismiss/', views.mark_notifications_as_read, name='mark_notifications_as_read'),
     # TODO: Refactor it

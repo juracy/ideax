@@ -7,7 +7,7 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['TestDimensionForm.test_max_ptbr 1'] = {
+snapshots['TestDimensionForm.test_max 1'] = {
     'description': [
         'Ensure this value has at most 500 characters (it has 501).'
     ],
