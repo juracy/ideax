@@ -10,10 +10,19 @@
       <h1 class="display-3 ">{% trans 'Create Idea' %}</h1>
   </div>
   <div class="container">
+      {% for message in messages %}
+        <div class="alert alert-dismissible alert-{% if message.tags == 'error' %}danger{%else%}{{message.tags}}{%endif%}">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            {{ message }}
+        </div>
+      {% endfor %}
       <form method="post" class="form post-form js-idea-create-form" action="{% url 'idea_new' %}" data-modal="#modal-idea-crud" data-list-div="#idea-list">
         {% csrf_token %}
         {% include 'ideax/includes/partial_idea_form.html' %}
         <div class="button-group">
+
+            {% include 'ideax/includes/recaptcha.html' %}
+
           <a class="back-redirect btn" href="/">{% trans 'Return' %}</a>
           <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
         </div>

@@ -16,6 +16,8 @@ requests==2.20.0
 django-markdownify==0.8.0
 django-tinymce-4==0.0.23
 django-tinymce4-lite==1.7.2
+django-notifications-hq==1.5.0
+beautifulsoup4==4.7.1
 
 # Gravatar support
 django-gravatar2==1.4.2

@@ -12,7 +12,7 @@
   <div class="challenge-list-bg">
       <h1 class="display-3">{% trans 'Explore Challenges' %}</h1>
   </div>
-  <div class="container">
+<div class="container">
     {% for message in messages %}
       <div class="alert alert-dismissible alert-{% if message.tags == 'error' %}danger{%else%}{{message.tags}}{%endif%}">
           <button type="button" class="close" data-dismiss="alert">×</button>
@@ -20,33 +20,63 @@
       </div>
     {% endfor %}
     <div class="row">
-      <div class="col-lg-2"></div>
-      <div class="col-lg-10">
-        <div id="carouselExampleIndicators">
-          <div class="carousel-inner">
-            {% for challenge in challenges %}
-            <div class="carousel-item active challenge-item" style="margin-top: 20px;">
-              <img class="d-block w-100" src="{{challenge.image.url}}" alt="First slide">
-              <a href="{% url 'challenge_detail' challenge_pk=challenge.pk %}">
-                  <div class="carousel-caption d-none d-md-block carousel-challenge" >
-                    <h5>{{challenge.title}}</h5>
-                    <p>{{challenge.summary}}</p>
-                  </div>
-              </a>
-              <div class="challenge-buttons">
-                <a class="delete btn btn-primary btn-click-del-challenge" data-name="challenge" data-id="{{challenge.pk}}" id="btn-confirm"><i class="far fa-trash-alt"></i></a>
-                <a onclick="location.href='{% url 'challenge_edit' challenge_pk=challenge.pk %}';" class="edit btn btn-primary"><i class="far fa-edit"></i></a>
-              </div>
+            <!-- Menu Desktop-->
+            <div class="col-lg-2 d-none d-lg-block">
+            <nav class="phase-filter">
+                <h4 class="filter-title"><i class="fas fa-filter"></i> {% trans 'Filters' %}</h4>
+                <ul class="phase-list nav nav-pills flex-column">
+                    <li class="nav-item" onclick="filterChallenges('{% url 'challenge_filter' status=0 %}')">
+                        <a class="nav-link" href="#">{% trans 'Active' %}<span class="badge badge-pill badge-primary count-ideas">{{ actives.active }}</span></a>
+                    </li>
+                    <li class="nav-item" onclick="filterChallenges('{% url 'challenge_filter' status=1 %}')">
+                        <a class="nav-link" href="#">{% trans 'Inactive' %}<span class="badge badge-pill badge-primary count-ideas">{{ actives.inactive }}</span></a>
+                    </li>
+                </ul>
+            </nav>
+            </div>
+            <!-- Menu Tablet -->
+            <div class="col-md-12 d-none d-md-block d-lg-none pb-2">
+                    <nav class="phase-filter">
+                    <ul class="phase-list nav nav-pills justify-content-center">
+                        <li class="nav-item" onclick="filterChallenges('{% url 'challenge_filter' status=0 %}')">
+                            <a class="nav-link" href="#">{% trans 'Active' %}<span class="badge badge-pill badge-primary count-ideas">{{ actives.active }}</span></a>
+                        </li>
+                        <li class="nav-item" onclick="filterChallenges('{% url 'challenge_filter' status=1 %}')">
+                            <a class="nav-link" href="#">{% trans 'Inactive' %}<span class="badge badge-pill badge-primary count-ideas">{{ actives.inactive }}</span></a>
+                        </li>
+                    </ul>
+                    </nav>
+                </div>
+            <!-- Menu Mobile -->
+
+            <div class="col-sm-12 d-block d-sm-block d-md-none pb-2">
+                <nav class="phase-filter">
+                    <ul class="phase-list nav nav-pills nav-justified">
+                        <li class="nav-item" onclick="filterChallenges('{% url 'challenge_filter' status=0 %}')">
+                            <a class="nav-link" href="#">{% trans 'Active' %}<span class="badge badge-pill badge-primary count-ideas">{{ actives.active }}</span></a>
+                        </li>
+                        <li class="nav-item" onclick="filterChallenges('{% url 'challenge_filter' status=1 %}')">
+                            <a class="nav-link" href="#">{% trans 'Inactive' %}<span class="badge badge-pill badge-primary count-ideas">{{ actives.inactive }}</span></a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
 
-            {% empty %}
-              <p style="text-align:center">No Challenges found</p>
-            {%endfor%}
-            {% include 'ideax/includes/partial_modal_delete.html' %}
-          </div>
+        <div class="col-lg-10">
+            <div id="carouselExampleIndicators">
+                <div class="carousel-inner">
+                <div class="empty-filter"></div>
+                <div id="challenge-list-group">
+                    {% for challenge in challenges %}
+                        {% include 'ideax/includes/partial_challenge_list.html' %}
+                    {% empty %}
+                        <p style="text-align:center">{% trans 'No Challenges found' %}</p>
+                    {%endfor%}
+                </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 {% endblock %}
 

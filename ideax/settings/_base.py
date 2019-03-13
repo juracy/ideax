@@ -18,3 +18,4 @@ from .apps._tinymce import *
 from .apps._celery import *
 from .apps._ipware import IPWARE_META_PRECEDENCE_ORDER
 from .apps._gravatar import *
+from .apps._notifications import *

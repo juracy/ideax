@@ -1,5 +1,5 @@
 from django.contrib.syndication.views import Feed
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _ # noqa
 from martor.templatetags.martortags import safe_markdown
 
 from .models import Comment, Idea

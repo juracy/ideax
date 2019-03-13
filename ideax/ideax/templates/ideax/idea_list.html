@@ -14,21 +14,24 @@
           <nav class="phase-filter">
             <h4 class="filter-title"><i class="fas fa-filter"></i> {% trans 'Filters' %}</h4>
             <ul class="phase-list nav nav-pills flex-column">
-              {% for key, value in phases.items %}
-                  <li class="nav-item" onclick="filterIdeas('{% url 'idea_filter' phase_pk=key %}')">
-                    <a class="nav-link {% if key == phase_req %} active {% endif %}" href="#">{{ value.phase }} <span class="badge badge-pill badge-primary count-ideas">{{ value.qtd }}</span></a>
+              {% for value in idea_phase %}
+                   <li class="nav-item" onclick="filterIdeas('{% url 'idea_filter' phase_pk=value.id %}')">
+                     <a class="nav-link {% if value.id == phase_req %} active {% endif %}" href="#">{{ value }}
+                     <span class="badge badge-pill badge-primary count-ideas">{{ value.qtd }}</span></a>
                   </li>
               {% endfor %}
             </ul>
           </nav>
         </div>
         <!-- Menu Tablet -->
+
+
         <div class="col-md-12 d-none d-md-block d-lg-none pb-2">
           <nav class="phase-filter">
             <ul class="phase-list nav nav-pills justify-content-center">
-              {% for key, value in phases.items %}
-                  <li class="nav-item" onclick="filterIdeas('{% url 'idea_filter' phase_pk=key %}')">
-                    <a class="nav-link" href="#">{{ value.phase }}</a>
+            {% for value in idea_phase %}
+                  <li class="nav-item" onclick="filterIdeas('{% url 'idea_filter' phase_pk=value.id %}')">
+                    <a class="nav-link" href="#">{{ value }}</a>
                   </li>
               {% endfor %}
             </ul>
@@ -39,19 +42,19 @@
         <div class="col-sm-12 d-block d-sm-block d-md-none pb-2">
           <nav class="phase-filter">
             <ul class="phase-list nav nav-pills nav-justified">
-              {% for key, value in phases.items %}
+              {% for  value in idea_phase %}
                 {%if forloop.counter < 3%}
-                  <li class="nav-item" onclick="filterIdeas('{% url 'idea_filter' phase_pk=key %}')">
-                    <a class="nav-link {% if key == phase_req %} active {% endif %}" href="#">{{ value.phase }}</a>
+                  <li class="nav-item" onclick="filterIdeas('{% url 'idea_filter' phase_pk=value.id %}')">
+                    <a class="nav-link {% if value.id == phase_req %} active {% endif %}" href="#">{{ value }}</a>
                   </li>
                 {%endif%}
               {% endfor %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">More</i></a>
                 <div class="dropdown-menu dropdown-menu-right">
-                  {% for key, value in phases.items %}
+                  {% for  value in idea_phase %}
                     {%if forloop.counter >= 3%}
-                        <a class="dropdown-item" href="#" onclick="filterIdeas('{% url 'idea_filter' phase_pk=key %}')">{{ value.phase }}</a>
+                        <a class="dropdown-item" href="#" onclick="filterIdeas('{% url 'idea_filter' phase_pk=value.id %}')">{{ value }}</a>
                     {%endif%}
                   {% endfor %}
                 </div>
@@ -124,32 +127,36 @@
             <div class="col-lg-6">
             <div class="btn-group float-right">
                 <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span>{% trans 'Sorted by' %}: </span><span class="option">{% trans 'Highest positive votes' %}</span>
+                    <span>{% trans 'Sorted by' %}: </span><span class="default hide">{% trans 'Highest positive votes' %}</span>
+                    <span class="option">{% trans 'Highest positive votes' %}</span>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item" href="#" id="ideaSort" name='thumbsUp'>{% trans 'Highest positive votes' %}</a>
-                    <a class="dropdown-item" href="#" id="ideaSort" name='thumbsDown'>{% trans 'Highest negative votes' %}</a>
-                    <a class="dropdown-item" href="#" id="ideaSort" name='comments'>{% trans 'Highest comments' %}</a>
-                    <a class="dropdown-item" href="#" id="ideaSort" name='alphabetic'>{% trans 'Alphabetical' %}</a>
-                    <a class="dropdown-item" href="#" id="ideaSort" name='creationDate'>{% trans 'Latest' %}</a>
+                    <a class="dropdown-item ideaSort" href="#" name='thumbsUp'>{% trans 'Highest positive votes' %}</a>
+                    <a class="dropdown-item ideaSort" href="#" name='thumbsDown'>{% trans 'Highest negative votes' %}</a>
+                    <a class="dropdown-item ideaSort" href="#" name='comments'>{% trans 'Most discussed' %}</a>
+                    <a class="dropdown-item ideaSort" href="#" name='alphabetic'>{% trans 'Alphabetical' %}</a>
+                    <a class="dropdown-item ideaSort" href="#" name='creationOrder'>{% trans 'Latest' %}</a>
                 </div>
             </div>
             </div>
          </div>
-          <div class="group card-columns infinite-container" id="idea-list-group">
+
+
+          <div class="grid" id="idea-list-group">
             {% for idea in ideas %}
               {% include 'ideax/includes/idea_detail.html' %}
             {% endfor %}
+
+            {% if ideas.has_next %}
+                <a class="infinite-more-link" href="?page={{ ideas.next_page_number }}"></a>
+            {% endif %}
+
+            <div class="loading" style="display: none; text-align: center">
+                <img src="{% static 'images/loading.gif' %}" alt=""> Loading...
+                <!--animation icon 'eclipse' is provided by loading.io-->
+            </div>
           </div>
 
-          {% if ideas.has_next %}
-            <a class="infinite-more-link" href="?page={{ ideas.next_page_number }}"></a>
-          {% endif %}
-
-          <div class="loading" style="display: none; text-align: center">
-            <img src="{% static 'images/loading.gif' %}" alt=""> Loading...
-            <!--animation icon 'eclipse' is provided by loading.io-->
-          </div>
 
 
           {%endif%}

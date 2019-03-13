@@ -8,7 +8,7 @@ from dj_database_url import parse as dburl
 BASE_DIR = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))).parent.parent
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
@@ -19,6 +19,10 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+
+GOOGLE_RECAPTCHA_SECRET_KEY = config('GOOGLE_RECAPTCHA_SECRET_KEY', default='')
+
+GOOGLE_RECAPTCHA_URL = config('GOOGLE_RECAPTCHA_URL', default='')
 
 # Application definition
 
@@ -50,7 +54,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'ideax.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -63,6 +66,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'ideax.context_processors.export_vars',
+                'ideax.context_processors.notifications_processor',
             ],
         },
     },
@@ -141,3 +145,5 @@ GENERAL_USER_GROUP = config('GENERAL_USER_GROUP')
 
 MAX_IMAGE_UPLOAD_SIZE = 5242880  # 5MB
 # SESSION_COOKIE_AGE = 180
+
+DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}

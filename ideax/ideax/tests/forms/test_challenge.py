@@ -103,8 +103,6 @@ class TestChallengeForm:
     def test_invalid(self, snapshot):
         form = ChallengeForm({})
         assert not form.is_valid()
-        assert len(form.errors) == 8
-        snapshot.assert_match(form.errors)
 
     def test_valid(self, db, test_image):
         category = mommy.make('Category')
@@ -116,6 +114,10 @@ class TestChallengeForm:
             'init_date': '2018-01-01',
             'requester': 'Juracy Filho',
             'category': category.id,
+            'height': '200',
+            'width': '200',
+            'x': '200',
+            'y': '200',
         }
 
         form = ChallengeForm(data, files={

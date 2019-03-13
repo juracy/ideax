@@ -1,30 +1,7 @@
 //modal delete
 $(document).ready(function () {
 
-    $('.btn-click-del').on('click', function () {
-        $("#mi-modal").modal('show');
-        title = $(event.currentTarget).closest('tr').children('td').first().text();
-        modalComponent($(this).data('name'), title, $(this).data('id'));
-    });
-
-    $('.btn-click-del-use-term').on('click', function(){
-        $("#mi-modal").modal('show');
-        title = $(event.currentTarget).closest('tr').children('td').eq(1).text();
-        modalComponent($(this).data('name'), title, $(this).data('id'));
-    });
-
-    $('.btn-click-del-challenge').on('click', function(){
-        $("#mi-modal").modal('show');
-        title = $(this).parents('div.challenge-item').find('h5').text();
-        modalComponent($(this).data('name'), title, $(this).data('id'));
-    });
-
-    function modalComponent(componentName, title, id){
-        $("#myModalLabel").html("Would you like to delete " + componentName +": " + title + "?");
-        $("#modal-btn-yes").data('id', id);
-    }
-
-    $('body').on('click', '#modal-btn-yes', function () {
+    $('body').on('click', '#modal-btn-yes', function (){
         var id = $(this).data('id');
         $("#mi-modal").modal('hide');
         location.href = urlDelete(id);
@@ -39,3 +16,44 @@ $(document).ready(function () {
     }
 
 });
+
+$(document).on('click', '.btn-click-del-challenge', function(){
+    $("#mi-modal").modal('show');
+    title = $(this).parents('div.challenge-item').find('h5').text();
+    modalComponent($(this).data('string'), $(this).data('name'), title, $(this).data('id'));
+});
+
+$(document).on('click', '.btn-click-del-use-term', function(){
+    $("#mi-modal").modal('show');
+    title = $(this).closest('tr').children('td').eq(1).text();
+    modalComponent($(this).data('string'), $(this).data('name'), title, $(this).data('id'));
+});
+
+$(document).on('click', '.btn-click-del-criterion', function () {
+    $("#mi-modal").modal('show');
+    title = $(this).closest('tr').children('td').first().text();
+    modalComponent($(this).data('string'), $(this).data('name'), title, $(this).data('id'));
+});
+
+$(document).on('click', '.btn-click-del-category-img', function () {
+    $("#mi-modal").modal('show');
+    title = $(this).closest('tr').children('td').first().text();
+    modalComponent($(this).data('string'), $(this).data('name'), title, $(this).data('id'));
+});
+
+$(document).on('click', '.btn-click-del-category', function () {
+    $("#mi-modal").modal('show');
+    title = $(this).closest('tr').children('td').first().text();
+    modalComponent($(this).data('string'), $(this).data('name'), title, $(this).data('id'));
+});
+
+$(document).on('click', '.btn-click-del-dimension', function () {
+    $("#mi-modal").modal('show');
+    title = $(this).closest('tr').children('td').first().text();
+    modalComponent($(this).data('string'), $(this).data('name'), title, $(this).data('id'));
+});
+
+function modalComponent(string, componentName, title, id){
+    $("#LabelModalDelete").html(string + componentName +": " + title + "?");
+    $("#modal-btn-yes").data('id', id);
+}

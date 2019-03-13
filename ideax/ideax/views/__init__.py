@@ -4,6 +4,8 @@ import uuid
 import collections
 import mistune
 import csv
+import urllib
+
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import render, get_object_or_404, redirect
@@ -12,22 +14,24 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.db.models import Count, Case, When, Q
 from django.contrib import messages
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _ # noqa
 from django.http import HttpResponse
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage, default_storage
 from django.db import connection
 from django.http import StreamingHttpResponse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files.base import ContentFile
-from martor.utils import LazyEncoder
+from ideax.settings.django._core import GOOGLE_RECAPTCHA_SECRET_KEY, GOOGLE_RECAPTCHA_URL
+from martor.utils import LazyEncoder, markdownify
+from bs4 import BeautifulSoup
+from notifications.signals import notify
 
 from ...users.models import UserProfile
 from ..models import (
-    Idea, Criterion, Popular_Vote, Phase, Phase_History,
+    Idea, Criterion, Popular_Vote, Phase_History, IdeaPhase,
     Comment, Evaluation, Category_Image, Challenge, Dimension,
 )
-from ..forms import IdeaForm, CriterionForm, EvaluationForm, ChallengeForm
+from ..forms import IdeaForm, CriterionForm, EvaluationForm, ChallengeForm, IdeaPhaseForm
 from ...singleton import ProfanityCheck
 from ...mail_util import MailUtil
 from ...util import get_ip, get_client_ip, audit
@@ -50,60 +54,52 @@ def index(request):
     return render(request, 'ideax/index.html')
 
 
+def mark_notifications_as_read(request):
+    notifications = request.user.notifications.unread()
+    notifications.mark_all_as_read()
+    data = {
+            'size': 0
+           }
+    return JsonResponse(data)
+
+
 @login_required
 def idea_list(request):
+
     ideas = get_ideas_init(request)
-    ideas['phases'] = get_phases_count()
+    ideas['idea_phase'] = get_phases_count()
+    # page = request.GET.get('page', 1)
+    # paginator = Paginator(ideas['ideas'], 5)
 
-    page = request.GET.get('page', 1)
-    paginator = Paginator(ideas['ideas'], 5)
-
-    try:
-        ideas['ideas'] = paginator.page(page)
-    except PageNotAnInteger:
-        ideas['ideas'] = paginator.page(1)
-    except EmptyPage:
-        ideas['ideas'] = paginator.page(paginator.num_pages)
+    # try:
+    #     ideas['ideas'] = paginator.page(page)
+    # except PageNotAnInteger:
+    #     ideas['ideas'] = paginator.page(1)
+    # except EmptyPage:
+    #     ideas['ideas'] = paginator.page(paginator.num_pages)
     return render(request, 'ideax/idea_list.html', ideas)
 
 
 def get_phases_count():
-    cursor = connection.cursor()
-    cursor.execute('''select current_phase as phase, count(*) as qtd
-                      from ideax_phase_history ph inner join ideax_idea i on ph.idea_id = i.id
-                      where ph.current =1 and i.discarded = 0 group by current_phase order by phase''')
-    data = cursor.fetchall()
-
-    phases = dict()
-    for i in Phase.choices():
-        phases[i[0]] = {'phase': i[1], 'qtd': 0}
-
-    for d in data:
-        phases[d[0]]['qtd'] = d[1]
-
-    return phases
+    return IdeaPhase.objects.annotate(qtd=Count("phase_history__idea_id",
+                                      filter=Q(phase_history__idea__discarded=False, phase_history__current=1))
+                                      ).order_by('order')
 
 
 @login_required
 def get_ideas_init(request):
     ideas_dic = dict()
+    ideas_dic['phase_req'] = IdeaPhase.objects.values('id').get(order=1)['id']
     ideas_dic['ideas'] = Idea.objects.filter(
         discarded=False,
-        phase_history__current_phase=1,
+        phase_history__current_phase=ideas_dic['phase_req'],
         phase_history__current=1).annotate(
             count_like=Count(Case(When(popular_vote__like=True, then=1)))).order_by('-count_like')
     ideas_dic['ideas_liked'] = get_ideas_voted(request, True)
     ideas_dic['ideas_disliked'] = get_ideas_voted(request, False)
     ideas_dic['ideas_created_by_me'] = get_ideas_created(request)
     ideas_dic['challenges'] = get_featured_challenges()
-    ideas_dic['phase_req'] = Phase.GROW.id
     return ideas_dic
-
-
-def get_phases():
-    phase_dic = dict()
-    phase_dic['phases'] = Phase.choices()
-    return phase_dic
 
 
 def idea_filter(request, phase_pk=None, search_part=None):
@@ -125,6 +121,7 @@ def idea_filter(request, phase_pk=None, search_part=None):
         'ideas_liked': get_ideas_voted(request, True),
         'ideas_disliked': get_ideas_voted(request, False),
         'ideas_created_by_me': get_ideas_created(request),
+        'idea_phase': get_phases_count()
     }
 
     data = dict()
@@ -138,7 +135,6 @@ def idea_filter(request, phase_pk=None, search_part=None):
         return JsonResponse(data)
     else:
         context['challenges'] = get_featured_challenges()
-        context['phases'] = get_phases_count()
         context['phase_req'] = phase_pk
         return render(request, 'ideax/idea_list.html', context)
 
@@ -149,24 +145,38 @@ def save_idea(request, form, template_name, new=False):
         if form.is_valid():
             idea = form.save(commit=False)
 
+            if GOOGLE_RECAPTCHA_URL:
+                ''' Begin reCAPTCHA validation '''
+                recaptcha_response = request.POST.get('g-recaptcha-response')
+                url = GOOGLE_RECAPTCHA_URL
+                values = {
+                    'secret': GOOGLE_RECAPTCHA_SECRET_KEY,
+                    'response': recaptcha_response
+                }
+                data = urllib.parse.urlencode(values).encode()
+                req = urllib.request.Request(url, data=data)
+                response = urllib.request.urlopen(req)
+                result = json.loads(response.read().decode())
+                ''' End reCAPTCHA validation '''
+                if not result['success']:
+                    messages.error(request, _('Invalid reCAPTCHA. Please try again.'))
+                    return render(request, template_name, {'form': form})
+
             if new:
                 idea_autor = UserProfile.objects.get(user=request.user)
                 idea.author = idea_autor
                 idea.creation_date = timezone.now()
-                idea.phase = Phase.GROW.id
-
+                idea.phase = IdeaPhase.objects.values('id').get(order=1)
                 if(idea.challenge):
                     idea.category = idea.challenge.category
                     category_image = Category_Image.get_random_image(idea.challenge.category)
                 else:
                     category_image = Category_Image.get_random_image(idea.category)
-
                 if category_image:
                     idea.category_image = category_image.image.url
-
                 idea.save()
                 idea.authors.add(idea.author)
-                phase_history = Phase_History(current_phase=Phase.GROW.id,
+                phase_history = Phase_History(current_phase=IdeaPhase.objects.get(order=1),
                                               previous_phase=0,
                                               date_change=timezone.now(),
                                               idea=idea,
@@ -175,17 +185,32 @@ def save_idea(request, form, template_name, new=False):
                 phase_history.save()
             else:
                 idea.save()
-
             idea.authors.clear()
             idea.authors.add(UserProfile.objects.get(user__email=request.user.email))
             if form.cleaned_data['authors']:
                 for author in form.cleaned_data['authors']:
                     idea.authors.add(author)
-
+                    notify.send(request.user,
+                                icon_class="fas fa-plus",
+                                recipient=author.user,
+                                description=_("You're a co-author of a new idea!"),
+                                target=idea,
+                                verb='author')
             messages.success(request, _('Idea saved successfully!'))
-
-            audit(request.user.username, get_client_ip(request), 'SAVE_IDEA_OPERATION', Idea.__name__, str(idea.id))
-
+            audit(request.user.username, get_client_ip(request), 'SAVE_IDEA_OPERATION',
+                  Idea.__name__, str(idea.id))
+            mark = markdownify(idea.summary + idea.target + idea.oportunity + idea.solution)
+            string = BeautifulSoup(mark, 'html.parser')
+            usernames = list(set(username.text[1::] for username in
+                                 string.findAll('a', {'class': 'direct-mention-link'})))
+            for username in usernames:
+                user = UserProfile.objects.get(user__username=username)
+                notify.send(request.user,
+                            icon_class="fas fa-at",
+                            recipient=user.user,
+                            description=_("You have been mentioned in an idea!"),
+                            target=idea,
+                            verb='mention')
             return redirect('idea_list')
 
     return render(request, template_name, {'form': form})
@@ -209,8 +234,9 @@ def idea_new(request):
 @permission_required('ideax.change_idea', raise_exception=True)
 def idea_edit(request, pk):
     idea = get_object_or_404(Idea, pk=pk)
-
-    if ((request.user.userprofile == idea.author and idea.get_current_phase() == Phase.GROW) or
+    discussion_phase_id = IdeaPhase.objects.values('id').get(order=1)['id']
+    if ((request.user.userprofile == idea.author
+            and idea.get_current_phase()['current_phase_id'] == discussion_phase_id) or
             request.user.has_perm(settings.PERMISSIONS["MANAGE_IDEA"])):
         queryset = get_authors(request.user.email)
         if request.method == "POST":
@@ -231,8 +257,9 @@ def idea_edit(request, pk):
 def idea_remove(request, pk):
     idea = get_object_or_404(Idea, pk=pk)
     data = dict()
-
-    if ((request.user.userprofile == idea.author and idea.get_current_phase() == Phase.GROW)
+    discussion_phase_id = IdeaPhase.objects.values('id').get(order=1)['id']
+    if ((request.user.userprofile == idea.author
+            and idea.get_current_phase()['current_phase_id'] == discussion_phase_id)
             or request.user.has_perm(settings.PERMISSIONS["MANAGE_IDEA"])):
         if request.method == 'POST':
             idea.discarded = True
@@ -359,7 +386,12 @@ def idea_evaluation(request, idea_pk):
             idea_score = soma/divisor
             idea.score = idea_score
             idea.save()
-
+            notify.send(idea.author.user,
+                        icon_class="far fa-check-square",
+                        recipient=idea.author.user,
+                        description=_("An idea of yours has ben evaluated"),
+                        target=idea,
+                        verb='evaluate')
             audit(
                 request.user.username,
                 get_client_ip(request),
@@ -401,6 +433,12 @@ def like_popular_vote(request, pk):
     if vote.count() == 0:
         like = Popular_Vote(like=like_boolean, voter=user, voting_date=timezone.now(), idea=idea_)
         like.save()
+        notify.send(request.user,
+                    icon_class="far fa-thumbs-up",
+                    recipient=idea_.author.user,
+                    description=_("liked your idea"),
+                    target=idea_,
+                    verb='like')
         audit(request.user.username, get_client_ip(request), 'LIKE_SAVE', Popular_Vote.__name__, str(like.id))
     else:
         if vote[0].like == like_boolean:
@@ -448,30 +486,36 @@ def get_ideas_created(request):
 @permission_required('ideax.add_phase_history', raise_exception=True)
 def change_idea_phase(request, pk, new_phase):
     idea = Idea.objects.get(pk=pk)
-    phase = Phase.get_phase_by_id(new_phase)
-
+    phase = IdeaPhase.objects.get(pk=new_phase)
     if phase is not None:
         phase_history_current = Phase_History.objects.get(idea=idea, current=True)
         phase_history_current.current = False
         phase_history_current.save()
 
-        phase_history_new = Phase_History(current_phase=phase.id,
-                                          previous_phase=phase_history_current.current_phase,
+        phase_history_new = Phase_History(current_phase_id=phase.id,
+                                          previous_phase=phase_history_current.current_phase.id,
                                           date_change=timezone.now(),
                                           idea=idea,
                                           author=UserProfile.objects.get(user=request.user),
                                           current=True)
         phase_history_new.save()
+        notify.send(idea.author.user,
+                    icon_class="far fa-check-square",
+                    recipient=idea.author.user,
+                    description=_("Your idea has reached a new phase!"),
+                    target=idea,
+                    verb='phase')
         audit(
             request.user.username,
             get_client_ip(request),
             'CHANGE_PHASE_SAVE',
-            Phase.__name__,
+            phase.name,
             str(phase_history_new.id)
         )
         messages.success(request, _('Phase change successfully!'))
         context = {}
         context['idea'] = idea
+        context['phase'] = phase.name
         try:
             mail_util.send_mail(
                 mail_util.generate_messages(
@@ -487,16 +531,31 @@ def change_idea_phase(request, pk, new_phase):
     return redirect('index')
 
 
+def sort_timeline(timeline_list, timeline_evaluation):
+    if timeline_evaluation:
+        for i in range(len(timeline_list)):
+            if timeline_evaluation.evaluation_date < timeline_list[i].date_change:
+                timeline_list.insert(i, timeline_evaluation)
+                break
+            elif (i == len(timeline_list)-1):
+                timeline_list.insert(len(timeline_list)+1, timeline_evaluation)
+    return timeline_list
+
+
 @login_required
 def idea_detail(request, pk):
     idea = get_object_or_404(Idea, pk=pk)
-    comments = idea.comment_set.filter(deleted=False)
-
+    timeline_phase_history = idea.phase_history_set.all()
+    timeline_evaluation = idea.evaluation_set.last()
     data = dict()
-    data["comments"] = comments
+    data["comments"] = idea.comment_set.filter(deleted=False)
     data["idea"] = idea
     data["idea_id"] = idea.pk
     data["authors"] = idea.authors.all()
+    data["creation_date"] = idea.creation_date.strftime("%d/%m/%Y")
+    data["timeline"] = sort_timeline(list(timeline_phase_history), timeline_evaluation)
+    data["idea_phase"] = get_phases_count()
+    data["current_phase"] = Phase_History.objects.get(idea=idea, current=True)
 
     initial = collections.OrderedDict()
     form_ = None
@@ -548,10 +607,16 @@ def post_comment(request):
                       parent=parent_object,
                       idea=idea,
                       date=timezone.now(),
-                      comment_phase=idea.get_current_phase().id,
+                      comment_phase=idea.get_current_phase()['current_phase_id'],
                       ip=get_ip(request))
 
     comment.save()
+    notify.send(request.user,
+                icon_class="far fa-comment",
+                recipient=idea.author.user,
+                description=_("commented on your idea"),
+                target=idea,
+                verb='comment')
     audit(request.user.username, get_client_ip(request), 'COMMENT_SAVE', Comment.__name__, str(comment.id))
     return JsonResponse({"msg": _("Your comment has been posted.")})
 
@@ -598,13 +663,12 @@ def challenge_detail(request, challenge_pk):
 @permission_required('ideax.add_challenge', raise_exception=True)
 def challenge_new(request):
     form = ChallengeForm()
-
     if request.method == "POST":
         form = ChallengeForm(request.POST, request.FILES)
 
         if form.is_valid():
             # path  = file_upload(request)
-            challenge = form.save(commit=False)
+            challenge = form.save()
             challenge.author = UserProfile.objects.get(user=request.user)
             challenge.creation_date = timezone.now()
             challenge.save()
@@ -622,8 +686,11 @@ def challenge_edit(request, challenge_pk):
         form = ChallengeForm(request.POST, request.FILES, instance=challenge)
 
         if form.is_valid():
-            challenge = form.save(commit=False)
-            challenge.save()
+            edit_challenge = form.save()
+            edit_challenge.creation_date = challenge.creation_date
+            edit_challenge.author = challenge.author
+            edit_challenge.pk = challenge.pk
+            edit_challenge.save()
             messages.success(request, _('Challenge saved successfully!'))
             return redirect('challenge_list')
     else:
@@ -660,7 +727,47 @@ def challenge_list(request):
     else:
         challenges = get_featured_challenges()
 
-    return render(request, 'ideax/challenge_list.html', {'challenges': challenges})
+    return render(request, 'ideax/challenge_list.html', {'challenges': challenges, 'actives': get_active_count()})
+
+
+def get_active_count():
+    cursor = connection.cursor()
+    cursor.execute('''select count(*) as qtd from ideax_challenge where active = 1 and discarted = 0''')
+    data_active = cursor.fetchall()
+    cursor.execute('''select count(*) as qtd from ideax_challenge where active = 0 and discarted = 0''')
+    data_inactive = cursor.fetchall()
+    actives = dict()
+    actives['active'] = data_active[0][0]
+    actives['inactive'] = data_inactive[0][0]
+
+    return actives
+
+
+def challenge_filter(request, status=None):
+    if status == 0:
+        status = True
+    else:
+        status = False
+    challenges = Challenge.objects.filter(
+            discarted=False,
+            active=status)
+
+    context = {
+        'challenges': challenges,
+    }
+
+    data = dict()
+    if request.is_ajax():
+        data['html_challenge_list'] = render_to_string('ideax/challenge_list_loop.html', context, request=request)
+        data['empty'] = 0
+        if not challenges:
+            data['html_challenge_list'] = render_to_string('ideax/includes/empty_challenge.html', request=request)
+            data['empty'] = 1
+        return JsonResponse(data)
+    else:
+        context['challenges'] = get_featured_challenges()
+        context['actives'] = get_active_count()
+        return render(request, 'ideax/challenge_list.html', context)
 
 
 @login_required
@@ -786,6 +893,83 @@ def get_authors(removed_author):
         .exclude(user__email__isnull=True) \
         .exclude(user__email__exact='') \
         .exclude(user__email=removed_author)
+
+
+@login_required
+@permission_required('ideax.add_ideaphase', raise_exception=True)
+def ideaphase_new(request):
+    if request.method == "POST":
+        form = IdeaPhaseForm(request.POST)
+        if form.is_valid():
+            ideaphase = form.save()
+            ideaphase.save()
+            messages.success(request, _('Idea Phase saved successfully!'))
+            audit(request.user.username, get_client_ip(request), 'CREATE_IDEA_PHASE', IdeaPhase.__name__, ideaphase.id)
+            return redirect('ideaphase_list')
+    else:
+        form = IdeaPhaseForm()
+    return render(request, 'ideax/ideaphase_new.html', {'form': form})
+
+
+@login_required
+def ideaphase_list(request):
+    audit(request.user.username, get_client_ip(request), 'IDEA_PHASE_LIST', IdeaPhase.__name__, '')
+    return render(request, 'ideax/ideaphase_list.html', get_ideaphase_list())
+
+
+def get_ideaphase_list():
+    return {'ideaphase_list': IdeaPhase.objects.all()}
+
+
+@login_required
+@permission_required('ideax.change_ideaphase', raise_exception=True)
+def ideaphase_edit(request, pk):
+    ideaphase = get_object_or_404(IdeaPhase, pk=pk)
+    if request.method == "POST":
+        form = IdeaPhaseForm(request.POST, instance=ideaphase)
+        if form.is_valid():
+            ideaphase = form.save(commit=False)
+            ideaphase.save()
+            messages.success(request, _('Idea Phase changed successfully!'))
+            audit(
+                request.user.username,
+                get_client_ip(request),
+                'EDIT_IDEA_PHASE__SAVE',
+                IdeaPhase.__name__,
+                str(ideaphase.id)
+            )
+            return redirect('ideaphase_list')
+    else:
+        form = IdeaPhaseForm(instance=ideaphase)
+
+    return render(request, 'ideax/ideaphase_edit.html', {'form': form})
+
+
+@login_required
+@permission_required('ideax.delete_ideaphase', raise_exception=True)
+def ideaphase_remove(request, pk):
+    ideaphase = get_object_or_404(IdeaPhase, pk=pk)
+    ideaphase.delete()
+    messages.success(request, _('Idea Phase removed successfully!'))
+    audit(request.user.username, get_client_ip(request), 'REMOVE_IDEA_PHASE_SAVE', IdeaPhase.__name__, str(pk))
+    return redirect('ideaphase_list')
+
+
+# def email_notification(request, idea, username, email, notification):
+#     subject = 'Assunto'
+#     message = 'mensagem'
+
+#     ctx = {
+#     'idea': idea.title,
+#     'username': username.username,
+#     'notification': notification,
+#     }
+
+#     message = render_to_string('ideax/email_notification.html', ctx)
+
+#     email = EmailMessage(subject=subject, body=message, to=[email])
+#     email.content_subtype = "html"
+#     email.send()
 
 
 __all__ = [

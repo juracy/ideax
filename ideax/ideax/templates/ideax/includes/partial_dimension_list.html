@@ -16,7 +16,7 @@
         <td>{{dimension.description}}</td>
         <div class="button-group">
           <td><button type="button" class="btn" onclick="location.href='{% url 'dimension_edit' pk=dimension.pk %}';"><i class="fa fa-edit"></i></button></td>
-          <td><button type="button" class="delete btn btn-click-del" data-name="dimension" data-id="{{dimension.pk}}" id="btn-confirm" ><i class="fa fa-trash"></i></button></td>
+          <td><button type="button" class="delete btn btn-click-del-dimension" data-string="{% trans 'Would you like to delete ' %}" data-name="{% trans 'the dimension' %}" data-id="{{dimension.pk}}" id="btn-confirm-deletion" ><i class="fa fa-trash"></i></button></td>
         </div>
       </tr>
     {% endfor %}

@@ -35,8 +35,8 @@
                 <td><button type="button" class="btn" onclick="location.href='{% url 'criterion_edit' pk=criterion.pk %}';"><i
                             class="fa fa-edit"></i></button></td>
 
-                <td><button type="button" class="delete btn btn-click-del" data-name="criterion" data-id="{{criterion.pk}}"
-                        id="btn-confirm"><i class="fa fa-trash"></i></button></td>
+                <td><button type="button" class="delete btn btn-click-del-criterion" data-string="{% trans 'Would you like to delete ' %}" data-name="{% trans 'the criterion' %}" data-id="{{criterion.pk}}"
+                        id="btn-confirm-deletion"><i class="fa fa-trash"></i></button></td>
                 {% endfor %}
         </tbody>
     </table>

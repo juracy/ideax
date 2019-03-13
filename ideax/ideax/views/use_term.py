@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _ # noqa
 
 from ...users.models import UserProfile
 from ...util import audit, get_client_ip, get_ip
@@ -73,10 +73,19 @@ def save_use_term(request, form, template_name, new=False):
                 messages.error(request, _('Already exists a active Term Of Use'))
                 return render(request, template_name, {'form': form})
             use_term.save()
+            set_invalid_use_term(request)
             messages.success(request, _('Term of Use saved successfully!'))
             return redirect('use_term_list')
     else:
         return render(request, template_name, {'form': form})
+
+
+@login_required
+def set_invalid_use_term(request):
+    users = UserProfile.objects.filter(user__is_staff=False)
+    for user in users:
+        user.use_term_accept = False
+        user.save()
 
 
 @login_required

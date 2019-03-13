@@ -1,48 +1,26 @@
 import random
-from enum import Enum
 
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _ # noqa
 from mptt.models import MPTTModel, TreeForeignKey
 
 
-class Phase(Enum):
-    GROW = (1, _('Discussion'), 'discussion', 'comments')
-    RATE = (2, _('Evaluation'), 'rate', 'clipboard')
-    IDEATION = (3, _('Ideation'), 'ideation', 'ideation')
-    APPROVED = (4, _('Approval'), 'approved', 'star')
-    ACT = (5, _('Evolution'), 'develop', 'tasks')
-    DONE = (6, _('Done'), 'done', 'check')
-    ARCHIVED = (7, _('Archived'), 'archived', 'archive')
-    PAUSED = (8, _('Paused'), 'paused', 'pause')
+class IdeaPhase(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField(max_length=500, blank=True,  null=True)
+    order = models.PositiveSmallIntegerField(default=False)
 
-    def __init__(self, id, description, css_class, icon_class):
-        self.id = id
-        self.description = description
-        self.css_class = css_class
-        self.css_icon_class = icon_class
+    def __str__(self):
+        return self.name
 
-    @classmethod
-    def choices(cls):
-        return tuple((x.id, x.description) for x in cls)
-
-    @classmethod
-    def get_phase_by_id(cls, id):
-        for temp in cls:
-            if temp.id == id:
-                return temp
-        return None
-
-    # TODO: Unused method equals to get_phase_by_id
-    @classmethod
-    def get_css_class(cls, id):
-        return cls.get_phase_by_id(id)
+    class Meta:
+        verbose_name = "Idea Phase"
 
 
-class Phase_History(models.Model):  # noqa
-    current_phase = models.PositiveSmallIntegerField()
+class Phase_History(models.Model): # noqa
+    current_phase = models.ForeignKey('IdeaPhase', on_delete=models.DO_NOTHING)
     previous_phase = models.PositiveSmallIntegerField()
     date_change = models.DateTimeField('data da mudança')
     idea = models.ForeignKey('Idea', on_delete=models.DO_NOTHING)
@@ -119,8 +97,7 @@ class Idea(models.Model):
         return self.phase_history_set.get(current=True)
 
     def get_current_phase(self):
-        return Phase.get_phase_by_id(
-            self.phase_history_set.get(current=True).current_phase)
+        return self.phase_history_set.values('current_phase_id').get(current=True)
 
     def get_absolute_url(self):
         return "/idea/%i/" % self.id
@@ -196,7 +173,7 @@ class Dimension(models.Model):
         return self.title
 
 
-class Category_Dimension(models.Model):  # noqa
+class Category_Dimension(models.Model): # noqa
     description = models.CharField(max_length=200)
     value = models.IntegerField()
     dimension = models.ForeignKey('Dimension', on_delete=models.PROTECT)
@@ -224,7 +201,7 @@ class UseTermManager(models.Manager):
         return False
 
 
-class Use_Term(models.Model):  # noqa
+class Use_Term(models.Model): # noqa
     creator = models.ForeignKey('users.UserProfile', on_delete=models.PROTECT)
     term = models.TextField(max_length=12500)
     init_date = models.DateTimeField()

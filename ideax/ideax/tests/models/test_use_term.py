@@ -1,6 +1,8 @@
-from datetime import datetime
+from django.db.utils import DataError
 
+from datetime import datetime
 from django.utils import timezone
+from pytest import raises
 
 from model_mommy import mommy
 
@@ -24,6 +26,11 @@ class TestUseTerm:
             final_date=timezone.make_aware(datetime(2018, 12, 31)),
         )
         assert not use_term.is_invalid_date()
+
+    def test_max_length_term(self, db_vendor):
+        if db_vendor != 'sqlite':
+            with raises(DataError):
+                mommy.make('Use_Term', term='X' * 12501)
 
     def test_invalid_date(self, db):
         use_term = mommy.make(

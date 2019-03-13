@@ -1,6 +1,9 @@
 from model_mommy import mommy
+from pytest import raises
 
 from ...models import Category_Image
+
+from django.db.utils import DataError
 
 
 class TestCategoryImage:
@@ -18,3 +21,8 @@ class TestCategoryImage:
         image = Category_Image.get_random_image(category)
         assert image.category == category
         assert image in images
+
+    def test_max_description(self, db_vendor):
+        if db_vendor != 'sqlite':
+            with raises(DataError):
+                mommy.make('Category_Image', description='X' * 51)

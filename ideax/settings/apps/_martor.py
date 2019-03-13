@@ -53,5 +53,5 @@ MARTOR_UPLOAD_URL = '/media/uploader/'  # default
 MARTOR_SEARCH_USERS_URL = '/martor/search-user/'  # default
 
 # Markdown Extensions
-MARTOR_MARKDOWN_BASE_MENTION_URL = '/author/'  # default (change this)
+MARTOR_MARKDOWN_BASE_MENTION_URL = '/users/profile/'  # default (change this)
 MARTOR_UPLOAD_PATH = 'images/uploads/{}'.format(time.strftime("%Y/%m/%d/"))
